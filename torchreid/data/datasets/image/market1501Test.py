@@ -41,8 +41,8 @@ class Market1501Test(ImageDataset):
             )
 
         self.train_dir = osp.join(self.data_dir, 'train_chunks', 'c1')
-        self.query_dir = osp.join(self.data_dir, 'query_chunks', 'c1')
-        self.gallery_dir = osp.join(self.data_dir, 'test_chunks', 'c1')
+        self.query_dir = osp.join(self.data_dir, 'query_sets', 's1')
+        self.gallery_dir = osp.join(self.data_dir, 'test_sets', 's1')
         self.extra_gallery_dir = osp.join(self.data_dir, 'images')
         self.market1501_500k = market1501_500k
 

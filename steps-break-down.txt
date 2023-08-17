@@ -1,0 +1,13 @@
+TODOS:
+0. Save accuracy with timestamp after every model training
+
+
+1. Create chunks that will be used to train model iteratively + write code for creating file containing id(s) of each chunk
+2.0 Explore how to select & store samples for Representative Memory
+2. Create samples for Representative Memory after every training
+3. Explore ways to merge samples from RM with current chunk's image on starting training
+4. Implement point 3 in Code
+5. Explore ways to save model (or model weights ???) and how to reuse that model with new data
+6. Implement point 5 in Code
+
+7. Iteratively check accuracy either it drops or improve
