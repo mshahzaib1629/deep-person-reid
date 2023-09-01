@@ -1,23 +1,33 @@
 import torchreid
 from torchsummary import summary
+from utils.herding_selection import apply_herding_selection
+
 
 def run_reid():
     datamanager = torchreid.data.ImageDataManager(
-    root="reid-data",
-    sources="market1501Test",
-    targets="market1501Test",
-    height=256,
-    width=128,
-    batch_size_train=32,
-    batch_size_test=100,
-    transforms=["random_flip", "random_crop"]
+        root="reid-data",
+        sources="market1501Test",
+        targets="market1501Test",
+        height=256,
+        width=128,
+        batch_size_train=32,
+        batch_size_test=100,
+        transforms=["random_flip", "random_crop"],
     )
+
+    # extract_images_from_loader(datamanager.train_loader)
+    apply_herding_selection(
+        datamanager.train_loader,
+        destination_directory="./reid-data/representative-memory",
+        selection_percent=0.5,
+    )
+    return
 
     model = torchreid.models.build_model(
         name="resnet50",
         num_classes=datamanager.num_train_pids,
         loss="softmax",
-        pretrained=True
+        pretrained=True,
     )
 
     # model = model.cuda()
@@ -26,24 +36,14 @@ def run_reid():
     # print(summary(model, (3, 128, 256), 32))
     # return
 
-    optimizer = torchreid.optim.build_optimizer(
-        model,
-        optim="adam",
-        lr=0.0003
-    )
+    optimizer = torchreid.optim.build_optimizer(model, optim="adam", lr=0.0003)
 
     scheduler = torchreid.optim.build_lr_scheduler(
-        optimizer,
-        lr_scheduler="single_step",
-        stepsize=20
+        optimizer, lr_scheduler="single_step", stepsize=20
     )
 
     engine = torchreid.engine.ImageSoftmaxEngine(
-        datamanager,
-        model,
-        optimizer=optimizer,
-        scheduler=scheduler,
-        label_smooth=True
+        datamanager, model, optimizer=optimizer, scheduler=scheduler, label_smooth=True
     )
 
     engine.run(
@@ -51,7 +51,7 @@ def run_reid():
         max_epoch=1,
         eval_freq=10,
         print_freq=2,
-        test_only=False
+        test_only=False,
     )
 
 

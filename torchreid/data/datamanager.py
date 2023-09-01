@@ -224,7 +224,7 @@ class ImageDataManager(DataManager):
             shuffle=False,
             num_workers=workers,
             pin_memory=self.use_gpu,
-            drop_last=True
+            drop_last=False
         )
 
         self.train_loader_t = None
