@@ -1,6 +1,6 @@
 import torchreid
 from torchsummary import summary
-from utils.herding_selection import apply_herding_selection
+from representative_memory import apply_herding_selection
 
 
 def run_reid():
@@ -17,9 +17,10 @@ def run_reid():
 
     # extract_images_from_loader(datamanager.train_loader)
     apply_herding_selection(
-        datamanager.train_loader,
+        trainLoader=datamanager.train_loader,
         destination_directory="./reid-data/representative-memory",
         selection_percent=0.5,
+        retain_percent=0.5
     )
     return
 
