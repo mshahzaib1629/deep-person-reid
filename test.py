@@ -17,8 +17,10 @@ def run_reid():
 
     # extract_images_from_loader(datamanager.train_loader)
     apply_herding_selection(
-        trainLoader=datamanager.train_loader,
-        destination_directory="./reid-data/representative-memory",
+        train_loader=datamanager.train_loader,
+        representative_memory_directory="./reid-data/representative-memory",
+        label_start_index=0,
+        label_end_index=3,
         selection_percent=0.5,
         retain_percent=0.5
     )
