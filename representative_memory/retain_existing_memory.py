@@ -5,6 +5,7 @@ import shutil
 import math
 from datetime import datetime
 from .herding_selection import herding_selection
+import json
 
 def load_representative_images(memory_directory):
     image_filenames = [filename for filename in os.listdir(memory_directory) if filename.endswith('.jpg')]
@@ -67,6 +68,28 @@ def create_backup(rp_memory_directory, backup_parent_directory):
     print(f"=> Representative Memory backup created in {formatted_datetime}")
     return backup_directory
 
+def update_labels_json(label_map, destination_directory):
+
+    # Specify the file path where you want to save the JSON file
+    file_path = os.path.join(destination_directory, 'labels.json')
+
+    label_json_data = {}
+
+    if (os.path.exists(file_path)):
+         with open(file_path, "r") as json_file:
+            label_json_data = json.load(json_file)
+            json_file.close()
+
+    # Adding new image names & their corresponding labels into existing ones
+    for image_name, label in  label_map.items():
+        label_json_data[image_name] = label
+      
+    # Open the file in write mode and write the data to it
+    with open(file_path, "w") as json_file:
+        json.dump(label_json_data, json_file)
+        json_file.close()
+    print("=> labels.json updated with retained images")
+
 def retain_existing_memory(rp_memory_directory, retain_percent, backup_parent_directory="./reid-data/rp-memory-backups"):
     
     if retain_percent > 1 or retain_percent < 0:
@@ -77,7 +100,7 @@ def retain_existing_memory(rp_memory_directory, retain_percent, backup_parent_di
     # create backup of current representative memory
     backup_directory = create_backup(rp_memory_directory, backup_parent_directory)
     current_memory_grouped_images = load_representative_images(backup_directory)
-    
+    label_map = {}
 
     for g_idx, image_group in enumerate(current_memory_grouped_images):
         data = [img["vector"] for img in image_group]
@@ -86,6 +109,9 @@ def retain_existing_memory(rp_memory_directory, retain_percent, backup_parent_di
         selected_indices = herding_selection(data, num_selected)
 
         for selected_index in selected_indices:
+            image_name = image_group[selected_index]["name"]
+            label_map[image_name] = image_name[:4]
+
             # Convert vector to image
             image_data = np.array(
                 image_group[selected_index]["vector"]
@@ -95,8 +121,11 @@ def retain_existing_memory(rp_memory_directory, retain_percent, backup_parent_di
 
             # Save image with the corresponding name
             image_path = os.path.join(
-                rp_memory_directory, image_group[selected_index]["name"]
+                rp_memory_directory, image_name
             )
             image.save(image_path)
+        
+        print(f"Retained {num_selected} images of {image_group[0]['name'][:4]} out of {len(image_group)}")
 
     print(f"=> Representative memory updated with previous data")
+    update_labels_json(label_map, rp_memory_directory)
