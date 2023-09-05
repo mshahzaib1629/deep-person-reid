@@ -9,6 +9,11 @@ import json
 
 
 class RetainExistingMemory:
+    """
+    This class is being used to take backup of the current representative memory and to retain the existing images in the representative memory.
+
+    Existing classes are being retained w.r.t retain_percent out of total samples belonging to that class in representative memory.
+    """
     label_json_data = {}
 
     def __init__(
@@ -29,9 +34,11 @@ class RetainExistingMemory:
                 json_file.close()
 
     def get_image_label_from_json(self, image_name):
+        """Get label of image that belong to the current representative memory based on its name."""
         return self.label_json_data[image_name]
 
     def load_representative_images(self, memory_directory):
+        """Load the images from the representative memory and group them based on their labels/classes."""
         image_filenames = [
             filename
             for filename in os.listdir(memory_directory)
@@ -53,11 +60,10 @@ class RetainExistingMemory:
             grouped_data[label].append(image)
         # Convert the grouped dictionary values to a list
         result = list(grouped_data.values())
-        # print(f"image name: { result[1][0]['name']}")
-        # display_image(result[1][0]['vector'])
         return result
 
     def create_backup(self):
+        """Create backup of current representative memory."""
         files_to_move = os.listdir(self.representative_memory_directory)
 
         if len(files_to_move) == 0:
@@ -90,6 +96,11 @@ class RetainExistingMemory:
         return backup_directory
 
     def update_labels_json(self, label_map):
+        """
+        Update labels.json file w.r.t label_map.
+        
+        Ideally, it's used to create the labels.json in representative memory with the image names selected thorough the selection process.
+        """
         # Specify the file path where you want to save the JSON file
         file_path = os.path.join(self.representative_memory_directory, "labels.json")
 
@@ -111,6 +122,7 @@ class RetainExistingMemory:
         print("=> labels.json updated with retained images")
 
     def retain_existing_memory(self):
+        """Take backup of the current representative memory and retain the existing images in the representative memory."""
         if self.retain_percent > 1 or self.retain_percent < 0:
             raise Exception(
                 "Invalid selection_percent provided. selection_percent must be between 0 and 1."

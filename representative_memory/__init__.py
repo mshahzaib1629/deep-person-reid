@@ -25,6 +25,9 @@ def apply_herding_selection(
     selection_percent=0.5,
     retain_percent=0.5,
 ):
+    """
+    Apply Herding Selection on new and existing images
+    """
     if not os.path.exists(representative_memory_directory):
         os.makedirs(representative_memory_directory)
 
@@ -32,6 +35,7 @@ def apply_herding_selection(
         representative_memory_directory=representative_memory_directory,
         retain_percent=retain_percent,
     ).retain_existing_memory()
+    
     AdjustNewImages(
         train_loader=train_loader,
         representative_memory_directory=representative_memory_directory,

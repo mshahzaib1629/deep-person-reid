@@ -7,6 +7,11 @@ import json
 
 
 class AdjustNewImages:
+    """
+    This class is being used to add new images into the representative memory 
+
+    New classes are being added in representative memory w.r.t selection_percent out of total samples belonging to that class.
+    """
     def __init__(
         self,
         train_loader,
@@ -22,6 +27,7 @@ class AdjustNewImages:
         self.label_end_index = label_end_index + 1
 
     def extract_images_from_loader(self):
+        """Extract images from the loader and group them based on their labels/classes."""
         images = []
         for b_index, batch in enumerate(self.train_loader):
             for i_index, vector in enumerate(batch["img"]):
@@ -49,6 +55,7 @@ class AdjustNewImages:
         return result
 
     def update_labels_json(self, label_map):
+        """Add the new selected image names along with their labels to the labels.json file."""
         # Specify the file path where you want to save the JSON file
         file_path = os.path.join(self.representative_memory_directory, "labels.json")
 
@@ -70,6 +77,7 @@ class AdjustNewImages:
         print("=> labels.json updated with new images")
 
     def adjust_new_images(self):
+        """Add new images to the representative memory based on the selection process"""
         if self.selection_percent > 1 or self.selection_percent < 0:
             raise Exception(
                 "Invalid selection_percent provided. selection_percent must be between 0 and 1."
