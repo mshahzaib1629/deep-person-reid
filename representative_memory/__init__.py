@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from PIL import Image
+import json
 from .retain_existing_memory import RetainExistingMemory
 from .adjust_new_images import AdjustNewImages
 
@@ -35,7 +36,7 @@ def apply_herding_selection(
         representative_memory_directory=representative_memory_directory,
         retain_percent=retain_percent,
     ).retain_existing_memory()
-    
+
     AdjustNewImages(
         train_loader=train_loader,
         representative_memory_directory=representative_memory_directory,
@@ -43,3 +44,24 @@ def apply_herding_selection(
         label_start_index=label_start_index,
         label_end_index=label_end_index,
     ).adjust_new_images()
+
+
+def get_representative_images(representative_memory_directory):
+    """Returns image paths and their corresponding labels."""
+    image_paths = []
+    labels = []
+
+    labels_file_path = os.path.join(representative_memory_directory, "labels.json")
+    
+    if os.path.exists(labels_file_path):
+        with open(labels_file_path, "r") as json_file:
+            label_json_data = json.load(json_file)
+            json_file.close()
+
+        for filename in os.listdir(representative_memory_directory):
+            if filename.endswith(".jpg") or filename.endswith(".png"):
+                image_path = os.path.join(representative_memory_directory, filename)
+                image_paths.append(image_path)
+                labels.append(label_json_data[filename])
+
+    return image_paths, labels
