@@ -4,6 +4,7 @@ from PIL import Image
 import json
 from .retain_existing_memory import RetainExistingMemory
 from .adjust_new_images import AdjustNewImages
+from .memory_loader import RepresentativeMemory
 
 
 def display_image(image_vector):
@@ -52,7 +53,7 @@ def get_representative_images(representative_memory_directory):
     labels = []
 
     labels_file_path = os.path.join(representative_memory_directory, "labels.json")
-    
+
     if os.path.exists(labels_file_path):
         with open(labels_file_path, "r") as json_file:
             label_json_data = json.load(json_file)
