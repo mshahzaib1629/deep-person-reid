@@ -84,7 +84,6 @@ class RepresentativeMemory(ImageDataset):
             # camid -= 1  # index starts from 0
             if relabel:
                 pid = pid2label[pid]
-            print(file_name, " => ", pid)
             data.append((img_path, pid, 0))
 
         return data

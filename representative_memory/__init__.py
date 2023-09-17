@@ -19,7 +19,22 @@ def display_image(image_vector):
     img.show()
 
 
-def apply_herding_selection(
+def extract_images_from_loader(train_loader):
+    """Extract images from the loader"""
+    images = []
+    for b_index, batch in enumerate(train_loader):
+        for i_index, vector in enumerate(batch["img"]):
+            images.append(
+                {
+                    "name": batch["impath"][i_index].split("/")[-1],
+                    "path": batch["impath"][i_index],
+                    "vector": vector.numpy(),
+                }
+            )
+    return images
+
+
+def update_representative_memory(
     train_loader,
     representative_memory_directory,
     label_start_index=0,
@@ -33,13 +48,14 @@ def apply_herding_selection(
     if not os.path.exists(representative_memory_directory):
         os.makedirs(representative_memory_directory)
 
+    train_images = extract_images_from_loader(train_loader)
     RetainExistingMemory(
         representative_memory_directory=representative_memory_directory,
         retain_percent=retain_percent,
     ).retain_existing_memory()
 
     AdjustNewImages(
-        train_loader=train_loader,
+        train_images=train_images,
         representative_memory_directory=representative_memory_directory,
         selection_percent=selection_percent,
         label_start_index=label_start_index,

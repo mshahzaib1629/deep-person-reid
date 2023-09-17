@@ -8,50 +8,46 @@ import json
 
 class AdjustNewImages:
     """
-    This class is being used to add new images into the representative memory 
+    This class is being used to add new images into the representative memory
 
     New classes are being added in representative memory w.r.t selection_percent out of total samples belonging to that class.
     """
+
     def __init__(
         self,
-        train_loader,
+        train_images,
         representative_memory_directory,
         selection_percent=0.5,
         label_start_index=0,
         label_end_index=3,
     ) -> None:
-        self.train_loader = train_loader
         self.representative_memory_directory = representative_memory_directory
+        self.train_images = self.exclude_representative_memory_images(train_images)
         self.selection_percent = selection_percent
         self.label_start_index = label_start_index
         self.label_end_index = label_end_index + 1
 
-    def extract_images_from_loader(self):
-        """Extract images from the loader and group them based on their labels/classes."""
-        images = []
-        for b_index, batch in enumerate(self.train_loader):
-            for i_index, vector in enumerate(batch["img"]):
-                images.append(
-                    {
-                        "name": batch["impath"][i_index].split("/")[-1],
-                        "path": batch["impath"][i_index],
-                        "vector": vector.numpy(),
-                    }
-                )
+    def exclude_representative_memory_images(self, train_images):
+        """train_images also contain images from representative memory (if it's used). This function will exclude them and only return new images"""
+        new_images = [
+            i
+            for i in train_images
+            if i["path"].find(self.representative_memory_directory) == -1
+        ]
+        return new_images
+
+    def group_train_images(self):
+        """Group images based on their labels/classes."""
 
         # Group items by their labels
         grouped_data = {}
-        for image in images:
+        for image in self.train_images:
             label = image["name"][self.label_start_index : self.label_end_index]
             if label not in grouped_data:
                 grouped_data[label] = []
             grouped_data[label].append(image)
         # Convert the grouped dictionary values to a list
         result = list(grouped_data.values())
-        # print(f"image name: { images[20]['name']}")
-        # display_image(images[20]['vector'])
-        # print('len: ', len(images))
-
         return result
 
     def update_labels_json(self, label_map):
@@ -89,7 +85,7 @@ class AdjustNewImages:
         ):
             raise Exception("Invalid label index(s)")
 
-        grouped_images = self.extract_images_from_loader()
+        grouped_images = self.group_train_images()
         label_map = {}
 
         for g_idx, image_group in enumerate(grouped_images):

@@ -2,7 +2,7 @@ import torchreid
 import os
 from torchsummary import summary
 from representative_memory import (
-    apply_herding_selection,
+    update_representative_memory,
     get_representative_images,
     RepresentativeMemory,
 )
@@ -65,8 +65,7 @@ def run_reid():
             test_only=False,
         )
 
-    # @TODO: Fix Needed: this function also take rp memory as input from train loader
-    apply_herding_selection(
+    update_representative_memory(
         train_loader=datamanager.train_loader,
         representative_memory_directory=representative_memory_directory,
         label_start_index=0,
