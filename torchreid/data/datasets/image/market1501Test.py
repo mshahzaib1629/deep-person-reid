@@ -40,6 +40,12 @@ class Market1501Test(ImageDataset):
                 '"Market-1501-v15.09.15".'
             )
 
+        # A chunk should must contain images from one source or distribution (bcz different datasets have different label patterns)
+        # @TODO: While creating chunk from any data source,, we must need to provide the dataset name. It'll be used in formation of data.json
+        # data.json will be used by dataloaders (chunks_loader -> [loaders of datasets]) to extract the pId and cId
+        # @TODO: Create a separate loader and directory for chunks loading
+
+
         self.train_dir = osp.join(self.data_dir, 'train_chunks', 'c1')
         self.query_dir = osp.join(self.data_dir, 'query_sets', 's1')
         self.gallery_dir = osp.join(self.data_dir, 'test_sets', 's1')

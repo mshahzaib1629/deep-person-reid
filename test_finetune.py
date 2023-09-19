@@ -3,11 +3,18 @@ import os
 from torchsummary import summary
 from representative_memory import (
     update_representative_memory,
-    get_representative_images,
     RepresentativeMemory,
 )
 
 torchreid.data.register_image_dataset("representative_memory", RepresentativeMemory)
+
+# ====================== Some IMPORTANT RULES ======================================
+# - Excluding representative memory, Training source must be one at a time.
+# - @TODO: While training with any data source, we must need to provide the dataset name to update_representative_memory. It'll be used in formation of data.json
+#   data.json will be used by dataloaders (memory_loader -> [loaders of datasets]) to extract the pId and cId
+# - @TODO: weight_directory , representative_memory_directory comes from environment variables
+# - @TODO: Add a nested directory in representative_memory with name "memory" which will contain all the representative memory images
+# and place backups besides memory
 
 
 def run_reid():
@@ -49,7 +56,7 @@ def run_reid():
 
         engine.run(
             save_dir="log/resnet50",
-            max_epoch=1,
+            max_epoch=3,
             eval_freq=10,
             print_freq=2,
             test_only=False,
@@ -59,7 +66,7 @@ def run_reid():
     else:
         engine.run(
             save_dir="log/resnet50",
-            max_epoch=1,
+            max_epoch=3,
             eval_freq=10,
             print_freq=2,
             test_only=False,

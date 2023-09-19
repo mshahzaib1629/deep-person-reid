@@ -2,7 +2,13 @@ import os
 import shutil
 from collections import defaultdict
 
-def copy_files_with_prefix(src_folder, dest_folder, prefixes, delete_previous=False):
+
+def copy_files_with_prefix(
+    src_folder,
+    dest_folder,
+    labels,
+    delete_previous=False,
+):
     file_list = os.listdir(src_folder)
     copied_labels = defaultdict(int)  # Dictionary to store label counts
     total_images_copied = 0
@@ -15,17 +21,17 @@ def copy_files_with_prefix(src_folder, dest_folder, prefixes, delete_previous=Fa
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
-    else: 
-         # Calculate the label counts and other statistics for the existing files
+    else:
+        # Calculate the label counts and other statistics for the existing files
         for file_name in os.listdir(dest_folder):
-            if file_name.split('.')[1] != 'txt':
+            if file_name.split(".")[1] != "txt":
                 label = file_name[:4]
                 copied_labels[label] += 1
                 total_images_copied += 1
                 already_existing_images.append(file_name)
 
     for file_name in file_list:
-        for prefix in prefixes:
+        for prefix in labels:
             if file_name.startswith(prefix):
                 src_path = os.path.join(src_folder, file_name)
                 dest_path = os.path.join(dest_folder, file_name)
@@ -39,22 +45,35 @@ def copy_files_with_prefix(src_folder, dest_folder, prefixes, delete_previous=Fa
 
     labels_path = os.path.join(dest_folder, "labels.txt")
     with open(labels_path, "w") as labels_file:
-        labels_file.write('\n\n=== Labels in this chunk =====\n\n')
+        labels_file.write("\n\n=== Labels in this chunk =====\n\n")
         for label, count in copied_labels.items():
             labels_file.write(f'"{label}", ')  # Include label count
 
         # adding summary
-        labels_file.write('\n\n=== Summary ========\n\n')
-        labels_file.write(f'Total Identities: {len(copied_labels.keys())}\n')  # Include label count 
-        labels_file.write(f'Total Images: {total_images_copied}\n\n')    
-        labels_file.write(f'Images per label -----\n\n')   
+        labels_file.write("\n\n=== Summary ========\n\n")
+        labels_file.write(
+            f"Total Identities: {len(copied_labels.keys())}\n"
+        )  # Include label count
+        labels_file.write(f"Total Images: {total_images_copied}\n\n")
+        labels_file.write(f"Images per label -----\n\n")
         for label, count in copied_labels.items():
             labels_file.write(f'"{label}": {count}\n')  # Include label count
 
+
 # Example usage:
-source_folder = "./reid-data/market1501-test/Market-1501-v15.09.15/bounding_box_train" 
+source_folder = "./reid-data/market1501-test/Market-1501-v15.09.15/bounding_box_train"
 destination_folder = "./reid-data/market1501-test/Market-1501-v15.09.15/train_chunks/c2"
-prefixes_to_copy = ["0023", "0037", "0032", "0027", "0028", "0030", "0035" ]
+labels = ["0023", "0037", "0032", "0027", "0028", "0030", "0035"]
+label_start_index = 0
+label_end_index = 3
 
-copy_files_with_prefix(source_folder, destination_folder, prefixes_to_copy, delete_previous=False)
+# @TODO: Add dataset_name as parameter, which can be used to populate data.json
+# @TODO: Add data.json [which includes dataset name and it's regarding images name]
+# data.json will be used by dataloaders to extract the pId and cId
 
+copy_files_with_prefix(
+    source_folder,
+    destination_folder,
+    labels,
+    delete_previous=True,
+)
