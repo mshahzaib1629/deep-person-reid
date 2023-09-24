@@ -1,13 +1,19 @@
 import torchreid
 from torchsummary import summary
-from representative_memory import update_representative_memory, get_representative_images
 from torchreid import utils
+from representative_memory import (
+    update_representative_memory,
+    get_representative_images,
+    ChunkLoader,
+)
+
+torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
 def run_reid():
     datamanager = torchreid.data.ImageDataManager(
         root="reid-data",
-        sources="market1501Test",
-        targets="market1501Test",
+        sources="chunks",
+        targets="chunks",
         height=256,
         width=128,
         batch_size_train=32,

@@ -29,14 +29,14 @@ def run_reid():
     datamanager = torchreid.data.ImageDataManager(
         root="reid-data",
         sources=["chunks"],
-        targets="market1501Test",
+        targets="chunks",
         height=256,
         width=128,
         batch_size_train=32,
         batch_size_test=100,
         transforms=["random_flip", "random_crop"],
     )
-    return
+
     model = torchreid.models.build_model(
         name="resnet50",
         num_classes=datamanager.num_train_pids,

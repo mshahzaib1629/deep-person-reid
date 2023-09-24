@@ -7,3 +7,7 @@ processsors = {
     "cuhk03": cuhk03_processor,
     "dukemtmc": dukemtmc_processor,
 }
+
+
+def is_dataset_processor_available(dataset_name: str) -> bool:
+    return processsors.keys().__contains__(dataset_name)

@@ -1,14 +1,19 @@
 import torchreid
 
 from torchsummary import summary
-from representative_memory import apply_herding_selection, get_representative_images
+from representative_memory import (
+    get_representative_images,
+    ChunkLoader,
+)
+
+torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
 
 def run_reid():
     datamanager = torchreid.data.ImageDataManager(
         root="reid-data",
-        sources="market1501Test",
-        targets="market1501Test",
+        sources="chunks",
+        targets="chunks",
         height=256,
         width=128,
         batch_size_train=32,
@@ -17,7 +22,7 @@ def run_reid():
     )
 
     # extract_images_from_loader(datamanager.train_loader)
-    
+
     model = torchreid.models.build_model(
         name="resnet50",
         num_classes=datamanager.num_train_pids,
@@ -34,10 +39,8 @@ def run_reid():
     optimizer = torchreid.optim.build_optimizer(model, optim="adam", lr=0.0003)
 
     start_epoch = torchreid.utils.resume_from_checkpoint(
-    'log/resnet50/model/model.pth.tar-1',
-    model,
-    optimizer
-)
+        "log/resnet50/model/model.pth.tar-1", model, optimizer
+    )
 
     scheduler = torchreid.optim.build_lr_scheduler(
         optimizer, lr_scheduler="single_step", stepsize=20
