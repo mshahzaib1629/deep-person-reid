@@ -4,9 +4,12 @@ from torchsummary import summary
 from representative_memory import (
     update_representative_memory,
     RepresentativeMemory,
+    ChunkLoader
 )
 
+
 torchreid.data.register_image_dataset("representative_memory", RepresentativeMemory)
+torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
 # ====================== Some IMPORTANT RULES ======================================
 # - Excluding representative memory, Training source must be one at a time.
@@ -25,7 +28,7 @@ def run_reid():
     )
     datamanager = torchreid.data.ImageDataManager(
         root="reid-data",
-        sources=["market1501Test", "representative_memory"],
+        sources=["chunks"],
         targets="market1501Test",
         height=256,
         width=128,
@@ -33,7 +36,7 @@ def run_reid():
         batch_size_test=100,
         transforms=["random_flip", "random_crop"],
     )
-
+    return
     model = torchreid.models.build_model(
         name="resnet50",
         num_classes=datamanager.num_train_pids,

@@ -5,6 +5,7 @@ import json
 from .retain_existing_memory import RetainExistingMemory
 from .adjust_new_images import AdjustNewImages
 from .memory_loader import RepresentativeMemory
+from .chunk_loader import ChunkLoader
 
 
 def display_image(image_vector):

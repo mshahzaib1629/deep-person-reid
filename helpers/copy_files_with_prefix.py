@@ -150,5 +150,5 @@ if __name__ == "__main__":
         source_folder,
         destination_folder,
         labels,
-        delete_previous=True,
+        delete_previous=False,
     )
