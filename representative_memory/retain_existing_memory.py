@@ -14,16 +14,20 @@ class RetainExistingMemory:
 
     Existing classes are being retained w.r.t retain_percent out of total samples belonging to that class in representative memory.
     """
+
     label_json_data = {}
 
     def __init__(
         self,
-        representative_memory_directory,
-        backup_parent_directory="./reid-data/rp-memory-backups",
+        representative_memory_main_directory,
         retain_percent=0.5,
     ) -> None:
-        self.representative_memory_directory = representative_memory_directory
-        self.backup_parent_directory = backup_parent_directory
+        self.representative_memory_directory = os.path.join(
+            representative_memory_main_directory, "memory"
+        )
+        self.backup_parent_directory = os.path.join(
+            representative_memory_main_directory, "backups"
+        )
         self.retain_percent = retain_percent
 
         file_path = os.path.join(self.representative_memory_directory, "labels.json")
@@ -98,7 +102,7 @@ class RetainExistingMemory:
     def update_labels_json(self, label_map):
         """
         Update labels.json file w.r.t label_map.
-        
+
         Ideally, it's used to create the labels.json in representative memory with the image names selected thorough the selection process.
         """
         # Specify the file path where you want to save the JSON file

@@ -4,7 +4,7 @@ from torchsummary import summary
 from representative_memory import (
     update_representative_memory,
     RepresentativeMemory,
-    ChunkLoader
+    ChunkLoader,
 )
 
 
@@ -28,7 +28,7 @@ def run_reid():
     )
     datamanager = torchreid.data.ImageDataManager(
         root="reid-data",
-        sources=["chunks"],
+        sources=["chunks", "representative_memory"],
         targets="chunks",
         height=256,
         width=128,
@@ -77,7 +77,7 @@ def run_reid():
 
     update_representative_memory(
         train_loader=datamanager.train_loader,
-        representative_memory_directory=representative_memory_directory,
+        representative_memory_main_directory=representative_memory_directory,
         label_start_index=0,
         label_end_index=3,
         selection_percent=0.5,

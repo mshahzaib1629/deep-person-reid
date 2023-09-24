@@ -15,13 +15,15 @@ class AdjustNewImages:
 
     def __init__(
         self,
+        representative__memory_main_directory,
         train_images,
-        representative_memory_directory,
         selection_percent=0.5,
         label_start_index=0,
         label_end_index=3,
     ) -> None:
-        self.representative_memory_directory = representative_memory_directory
+        self.representative_memory_directory = os.path.join(
+            representative__memory_main_directory, "memory"
+        )
         self.train_images = self.exclude_representative_memory_images(train_images)
         self.selection_percent = selection_percent
         self.label_start_index = label_start_index

@@ -30,21 +30,21 @@ class RepresentativeMemory(ImageDataset):
         self.dataset_dir = osp.join(self.root, self.dataset_dir)
 
         if osp.isdir(self.dataset_dir):
-            self.data_dir = self.dataset_dir
+            self.memory_dir = os.path.join(self.dataset_dir, "memory")
         else:
             os.makedirs(self.dataset_dir)
-            self.data_dir = self.dataset_dir
+            self.memory_dir = os.path.join(self.dataset_dir, "memory")
             warnings.warn("Representative Memory not found.")
 
-        self.train_dir = self.data_dir
+        if os.path.exists(self.memory_dir) == False:
+            os.makedirs(self.memory_dir)
 
         required_files = [
-            self.data_dir,
-            self.train_dir,
+            self.memory_dir,
         ]
         self.check_before_run(required_files)
 
-        train = self.process_dir(self.train_dir, relabel=True)
+        train = self.process_dir(self.memory_dir, relabel=True)
         query = []
         gallery = []
 

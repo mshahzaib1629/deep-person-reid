@@ -37,7 +37,7 @@ def extract_images_from_loader(train_loader):
 
 def update_representative_memory(
     train_loader,
-    representative_memory_directory,
+    representative_memory_main_directory,
     label_start_index=0,
     label_end_index=4,
     selection_percent=0.5,
@@ -46,29 +46,31 @@ def update_representative_memory(
     """
     Apply Herding Selection on new and existing images
     """
-    if not os.path.exists(representative_memory_directory):
-        os.makedirs(representative_memory_directory)
+    if not os.path.exists(representative_memory_main_directory):
+        os.makedirs(representative_memory_main_directory)
 
     train_images = extract_images_from_loader(train_loader)
     RetainExistingMemory(
-        representative_memory_directory=representative_memory_directory,
+        representative_memory_main_directory,
         retain_percent=retain_percent,
     ).retain_existing_memory()
 
     AdjustNewImages(
+        representative_memory_main_directory,
         train_images=train_images,
-        representative_memory_directory=representative_memory_directory,
         selection_percent=selection_percent,
         label_start_index=label_start_index,
         label_end_index=label_end_index,
     ).adjust_new_images()
 
 
-def get_representative_images(representative_memory_directory):
+def get_representative_images(representative_memory_main_directory):
     """Returns image paths and their corresponding labels."""
     image_paths = []
     labels = []
-
+    representative_memory_directory = os.path.join(
+        representative_memory_main_directory, "memory"
+    )
     labels_file_path = os.path.join(representative_memory_directory, "labels.json")
 
     if os.path.exists(labels_file_path):
