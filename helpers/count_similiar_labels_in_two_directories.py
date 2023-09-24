@@ -24,8 +24,8 @@ def count_images_by_labels(folder_a, folder_b, labels):
 
     return counts_a, counts_b
 
-folder_a = "./reid-data/market1501-test/Market-1501-v15.09.15/query"
-folder_b = "./reid-data/market1501-test/Market-1501-v15.09.15/query_sets/s1"
+folder_a = "./reid-data/market1501/Market-1501-v15.09.15/query"
+folder_b = "./reid-data/chunks/query/c1"
 given_labels = ["0001", "0004"]
 
 counts_in_folder_a, counts_in_folder_b = count_images_by_labels(folder_a, folder_b, given_labels)

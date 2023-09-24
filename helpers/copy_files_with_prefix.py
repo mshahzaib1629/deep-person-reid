@@ -141,9 +141,9 @@ def copy_files_with_prefix(
 if __name__ == "__main__":
     # Example usage:
     dataset_name = "market1501"
-    source_folder = "./reid-data/market1501-test/Market-1501-v15.09.15/bounding_box_train"
-    destination_folder = "./reid-data/market1501-test/Market-1501-v15.09.15/train_chunks/c4"
-    labels = ["0023", "0037", "0032", "0027", "0028", "0030", "0035"]
+    source_folder = "./reid-data/market1501/Market-1501-v15.09.15/bounding_box_train"
+    destination_folder = "./reid-data/chunks/train/c4"
+    labels = ["0023", "0037", "0032", "0027", "0028", "0030", "0035", "0332"]
 
     copy_files_with_prefix(
         dataset_name,
