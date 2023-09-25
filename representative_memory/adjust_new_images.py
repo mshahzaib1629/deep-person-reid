@@ -15,6 +15,7 @@ class AdjustNewImages:
 
     def __init__(
         self,
+        current_dataset_name,
         representative__memory_main_directory,
         train_images,
         selection_percent=0.5,
@@ -24,10 +25,13 @@ class AdjustNewImages:
         self.representative_memory_directory = os.path.join(
             representative__memory_main_directory, "memory"
         )
+        self.current_dataset_name = current_dataset_name
         self.train_images = self.exclude_representative_memory_images(train_images)
         self.selection_percent = selection_percent
         self.label_start_index = label_start_index
         self.label_end_index = label_end_index + 1
+
+    name_dataset_dict = {}
 
     def exclude_representative_memory_images(self, train_images):
         """train_images also contain images from representative memory (if it's used). This function will exclude them and only return new images"""
@@ -74,6 +78,52 @@ class AdjustNewImages:
             json_file.close()
         print("=> labels.json updated with new images")
 
+    def get_name_dataset_dict(self, new_images_names: list) -> dict:
+        existing_data_dict = {}
+
+        # Read existing data.json file
+        data_json_path = os.path.join(self.representative_memory_directory, "data.json")
+        if os.path.exists(data_json_path):
+            with open(data_json_path, "r") as json_file:
+                existing_data_dict = json.load(json_file)
+
+        # mapping existing images into {image_name: dataset_name} in name_dataset_dict
+        for dataset, file_list in existing_data_dict.items():
+            for file_name in file_list:
+                self.name_dataset_dict[file_name] = dataset
+
+        # adding new images into exisiting map
+        for image_name in new_images_names:
+            self.name_dataset_dict[image_name] = self.current_dataset_name
+
+    def update_data_json(self, selected_images_names):
+        """Update data.json w.r.t all the images present in the updated memory"""
+        # Select the entities from name_dataset_dict which are selected to be placed in the latest version of directory,
+        # (by this, all the existing and new images must be available in name_dataset_dict along with their dataset names)
+        filtered_name_dataset_dict = {
+            key: value
+            for key, value in self.name_dataset_dict.items()
+            if key in selected_images_names
+        }
+
+        # group these entities based on their dataset_names
+        data_dict = {}
+        # Iterate through the original dictionary
+        for key, value in filtered_name_dataset_dict.items():
+            # If the value is not in the output dictionary, create a new list
+            if value not in data_dict:
+                data_dict[value] = []
+
+            # Append the key to the list associated with the value
+            data_dict[value].append(key)
+
+        data_json_path = os.path.join(self.representative_memory_directory, "data.json")
+
+        # create a json file of this grouped data named data.json
+        with open(data_json_path, "w") as json_file:
+            json.dump(data_dict, json_file)
+        print("=> data.json updated w.r.t all the images present in updated memroy")
+
     def adjust_new_images(self):
         """Add new images to the representative memory based on the selection process"""
         if self.selection_percent > 1 or self.selection_percent < 0:
@@ -86,6 +136,8 @@ class AdjustNewImages:
             or self.label_end_index < 0
         ):
             raise Exception("Invalid label index(s)")
+
+        self.get_name_dataset_dict([image["name"] for image in self.train_images])
 
         grouped_images = self.group_train_images()
         label_map = {}
@@ -131,4 +183,11 @@ class AdjustNewImages:
         print(
             f"=> New images added to representative memory ({self.representative_memory_directory})"
         )
+
+        updated_memory_images_names = [
+            filename
+            for filename in os.listdir(self.representative_memory_directory)
+            if filename.endswith(".jpg") or filename.endswith(".png")
+        ]
+        self.update_data_json(updated_memory_images_names)
         self.update_labels_json(label_map)

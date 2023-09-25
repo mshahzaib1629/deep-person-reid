@@ -132,6 +132,14 @@ class RetainExistingMemory:
                 "Invalid selection_percent provided. selection_percent must be between 0 and 1."
             )
 
+        # Loading current data.json (if exists). It will be updated in AdjustNewImage module.
+        data_json = {}
+        data_json_path = os.path.join(self.representative_memory_directory, "data.json")
+        if os.path.exists(data_json_path):
+            with open(data_json_path, "r") as json_file:
+                data_json = json.load(json_file)
+                json_file.close()
+
         # create backup of current representative memory
         backup_directory = self.create_backup()
         current_memory_grouped_images = self.load_representative_images(
@@ -168,3 +176,9 @@ class RetainExistingMemory:
 
         print(f"=> Representative memory updated with retained images")
         self.update_labels_json(label_map)
+
+        # moving data.json of previous memory in newer version of representation memory
+        with open(data_json_path, "w") as json_file:
+            json.dump(data_json, json_file)
+            json_file.close()
+            print("=> data.json added with outdated memory images")

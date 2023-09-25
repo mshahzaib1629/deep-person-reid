@@ -9,7 +9,6 @@ from .chunk_loader import ChunkLoader
 
 
 def display_image(image_vector):
-    # @TODO Replace with your image shape (with 3 color channels)
     image_shape = (256, 128, 3)
 
     # Reshape the vector back to an image
@@ -37,6 +36,7 @@ def extract_images_from_loader(train_loader):
 
 def update_representative_memory(
     train_loader,
+    current_dataset_name,
     representative_memory_main_directory,
     label_start_index=0,
     label_end_index=4,
@@ -56,6 +56,7 @@ def update_representative_memory(
     ).retain_existing_memory()
 
     AdjustNewImages(
+        current_dataset_name,
         representative_memory_main_directory,
         train_images=train_images,
         selection_percent=selection_percent,

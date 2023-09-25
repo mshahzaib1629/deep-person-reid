@@ -13,11 +13,9 @@ torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
 # ====================== Some IMPORTANT RULES ======================================
 # - Excluding representative memory, Training source must be one at a time.
-# - @TODO: While training with any data source, we must need to provide the dataset name to update_representative_memory. It'll be used in formation of data.json
-#   data.json will be used by dataloaders (memory_loader -> [loaders of datasets]) to extract the pId and cId
+#   data.json is used by memory loader for dataset processing (i.e. memory_loader -> [loaders of datasets]) to extract the pId and cId
+# - labels.json is used for applying herding selection over labels.
 # - @TODO: weight_directory , representative_memory_directory comes from environment variables
-# - @TODO: Add a nested directory in representative_memory with name "memory" which will contain all the representative memory images
-# and place backups besides memory
 
 
 def run_reid():
@@ -26,6 +24,8 @@ def run_reid():
     should_update: bool = os.path.exists(weight_directory) and os.path.exists(
         representative_memory_directory
     )
+
+    source_dataset_name = "market1501"
     datamanager = torchreid.data.ImageDataManager(
         root="reid-data",
         sources=["chunks", "representative_memory"],
@@ -77,6 +77,7 @@ def run_reid():
 
     update_representative_memory(
         train_loader=datamanager.train_loader,
+        current_dataset_name=source_dataset_name,
         representative_memory_main_directory=representative_memory_directory,
         label_start_index=0,
         label_end_index=3,

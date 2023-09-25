@@ -9,19 +9,17 @@ from .dataset_processors import processsors as dataset_processors
 class ChunkLoader(ImageDataset):
     """Chunk Loader"""
 
-    TRAIN_CHUNK = "c4"
+    TRAIN_CHUNK = "c3"
     QUERY_CHUNK = "c1"
     GALLERY_CHUNK = "c1"
 
     _junk_pids = [0, -1]
-    # @TODO: Need updation once chunks are moved to a dedicated directory
     dataset_dir = "chunks"
 
     def __init__(self, root="", **kwargs):
         self.root = osp.abspath(osp.expanduser(root))
         self.dataset_dir = osp.join(self.root, self.dataset_dir)
 
-        # @TODO: Need updation once chunks are moved to a dedicated directory
         if osp.isdir(self.dataset_dir):
             self.data_dir = self.dataset_dir
         else:
