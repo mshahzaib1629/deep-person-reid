@@ -27,6 +27,10 @@ def update_labels_txt(dest_folder, copied_labels, total_images_copied):
 def get_name_dataset_dict(
     data_json_base_path: str, new_dataset_name: str, new_images_names: list
 ) -> dict:
+    """
+    Get {image_name: dataset_name} dictionary. This can be used to filter images based on the selection mechanism. \
+        Filtered images can be regrouped w.r.t dataset names in update_data_json.
+    """
     existing_data_dict = {}
     name_dataset_dict = {}
 
@@ -49,6 +53,7 @@ def get_name_dataset_dict(
 
 
 def update_data_json(dest_folder, selected_images_names, name_dataset_dict):
+    """Update data.json w.r.t all the images present in the selected_images_names"""
     # Select the entities from name_dataset_dict which are selected to be placed in the latest version of directory,
     # (by this, all the existing and new images must be available in name_dataset_dict along with their dataset names)
     filtered_name_dataset_dict = {

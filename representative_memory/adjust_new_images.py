@@ -4,6 +4,7 @@ from PIL import Image
 import math
 from .herding_selection import herding_selection
 import json
+from .utils import get_name_dataset_dict, update_data_json
 
 
 class AdjustNewImages:
@@ -78,52 +79,6 @@ class AdjustNewImages:
             json_file.close()
         print("=> labels.json updated with new images")
 
-    def get_name_dataset_dict(self, new_images_names: list) -> dict:
-        existing_data_dict = {}
-
-        # Read existing data.json file
-        data_json_path = os.path.join(self.representative_memory_directory, "data.json")
-        if os.path.exists(data_json_path):
-            with open(data_json_path, "r") as json_file:
-                existing_data_dict = json.load(json_file)
-
-        # mapping existing images into {image_name: dataset_name} in name_dataset_dict
-        for dataset, file_list in existing_data_dict.items():
-            for file_name in file_list:
-                self.name_dataset_dict[file_name] = dataset
-
-        # adding new images into exisiting map
-        for image_name in new_images_names:
-            self.name_dataset_dict[image_name] = self.current_dataset_name
-
-    def update_data_json(self, selected_images_names):
-        """Update data.json w.r.t all the images present in the updated memory"""
-        # Select the entities from name_dataset_dict which are selected to be placed in the latest version of directory,
-        # (by this, all the existing and new images must be available in name_dataset_dict along with their dataset names)
-        filtered_name_dataset_dict = {
-            key: value
-            for key, value in self.name_dataset_dict.items()
-            if key in selected_images_names
-        }
-
-        # group these entities based on their dataset_names
-        data_dict = {}
-        # Iterate through the original dictionary
-        for key, value in filtered_name_dataset_dict.items():
-            # If the value is not in the output dictionary, create a new list
-            if value not in data_dict:
-                data_dict[value] = []
-
-            # Append the key to the list associated with the value
-            data_dict[value].append(key)
-
-        data_json_path = os.path.join(self.representative_memory_directory, "data.json")
-
-        # create a json file of this grouped data named data.json
-        with open(data_json_path, "w") as json_file:
-            json.dump(data_dict, json_file)
-        print("=> data.json updated w.r.t all the images present in updated memroy")
-
     def adjust_new_images(self):
         """Add new images to the representative memory based on the selection process"""
         if self.selection_percent > 1 or self.selection_percent < 0:
@@ -137,7 +92,11 @@ class AdjustNewImages:
         ):
             raise Exception("Invalid label index(s)")
 
-        self.get_name_dataset_dict([image["name"] for image in self.train_images])
+        self.name_dataset_dict = get_name_dataset_dict(
+            self.representative_memory_directory,
+            self.current_dataset_name,
+            [image["name"] for image in self.train_images],
+        )
 
         grouped_images = self.group_train_images()
         label_map = {}
@@ -189,5 +148,10 @@ class AdjustNewImages:
             for filename in os.listdir(self.representative_memory_directory)
             if filename.endswith(".jpg") or filename.endswith(".png")
         ]
-        self.update_data_json(updated_memory_images_names)
+        update_data_json(
+            self.representative_memory_directory,
+            updated_memory_images_names,
+            self.name_dataset_dict,
+        )
+        print("=> data.json updated w.r.t all the images present in updated memroy")
         self.update_labels_json(label_map)

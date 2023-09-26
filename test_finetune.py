@@ -13,7 +13,7 @@ torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
 # ====================== Some IMPORTANT RULES ======================================
 # - Excluding representative memory, Training source must be one at a time.
-#   data.json is used by memory loader for dataset processing (i.e. memory_loader -> [loaders of datasets]) to extract the pId and cId
+#   data.json is used by memory loader for dataset processing (i.e. memory_loader -> [processors of datasets]) to extract the pId and cId
 # - labels.json is used for applying herding selection over labels.
 # - @TODO: weight_directory , representative_memory_directory comes from environment variables
 

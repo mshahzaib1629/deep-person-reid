@@ -3,13 +3,13 @@ import os.path as osp
 import warnings
 import json, os
 from torchreid.data import ImageDataset
-from .dataset_processors import processsors as dataset_processors
+from .utils import process_datasets
 
 
 class ChunkLoader(ImageDataset):
     """Chunk Loader"""
 
-    TRAIN_CHUNK = "c3"
+    TRAIN_CHUNK = "c2"
     QUERY_CHUNK = "c1"
     GALLERY_CHUNK = "c1"
 
@@ -41,29 +41,11 @@ class ChunkLoader(ImageDataset):
 
         self.check_before_run(required_files)
 
-        train = self.process_datasets(self.train_dir)
-        query = self.process_datasets(self.query_dir)
-        gallery = self.process_datasets(self.gallery_dir)
+        train = process_datasets(self.train_dir)
+        query = process_datasets(self.query_dir)
+        gallery = process_datasets(self.gallery_dir)
 
         super(ChunkLoader, self).__init__(train, query, gallery, **kwargs)
-
-    def process_datasets(self, dir_path):
-        """Load images present in chunks by using their respective processors to extract their person ids and camera ids."""
-        data_json_path = os.path.join(dir_path, "data.json")
-        data = []
-
-        if os.path.exists(data_json_path) == False:
-            return []
-
-        data_json = {}
-        with open(data_json_path, "r") as json_file:
-            data_json = json.load(json_file)
-
-        for key, images in data_json.items():
-            image_paths = [os.path.join(dir_path, image) for image in images]
-            data.extend(dataset_processors[key](image_paths))
-
-        return data
 
     def check_directories(self):
         """This function will check if required folder structure is available or not. If not, it will create base directories for train, query and gallery chunks."""
