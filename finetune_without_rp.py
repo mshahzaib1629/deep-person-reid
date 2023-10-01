@@ -6,6 +6,7 @@ from representative_memory import (
     RepresentativeMemory,
     ChunkLoader,
 )
+
 torchreid.data.register_image_dataset("representative_memory", RepresentativeMemory)
 torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
@@ -16,12 +17,15 @@ torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
 # - In this test, Representative Memory is not being used. We are fine tuning the existing model by updating the last classifier layer.
 
+
 def run_reid(
     source_dataset_name,
     source_datasets,
     target_datasets,
     weight_directory,
     rp_memory_dir,
+    label_start_index,
+    label_end_index,
 ):
     should_update: bool = os.path.exists(weight_directory)
 
@@ -77,8 +81,10 @@ def run_reid(
 
 
 if __name__ == "__main__":
-    source_dataset_name = "market1501"
     source_datasets = ["chunks"]
+    source_dataset_name = "market1501"
+    source_dataset_label_start_index = 0
+    source_dataset_label_end_index = 3
     target_datasets = "chunks"
     weight_directory = "log/resnet50/model/model.pth.tar-3-after-third-ter"
     rp_memory_directory = "reid-data/representative-memory"
@@ -89,4 +95,6 @@ if __name__ == "__main__":
         target_datasets,
         weight_directory,
         rp_memory_directory,
+        label_start_index=source_dataset_label_start_index,
+        label_end_index=source_dataset_label_end_index,
     )
