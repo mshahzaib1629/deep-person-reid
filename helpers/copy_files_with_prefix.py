@@ -86,6 +86,8 @@ def copy_files_with_prefix(
     dest_folder,
     labels,
     delete_previous=False,
+    label_start_index=0,
+    label_end_index=3,
 ):
     file_list = os.listdir(src_folder)
     copied_labels = defaultdict(int)  # Dictionary to store label counts
@@ -104,7 +106,7 @@ def copy_files_with_prefix(
         # Calculate the label counts and other statistics for the existing files
         for file_name in os.listdir(dest_folder):
             if file_name.split(".")[1] != "txt":
-                label = file_name[:4]
+                label = file_name[label_start_index : label_end_index + 1]
                 copied_labels[label] += 1
                 total_images_copied += 1
                 already_existing_images.append(file_name)
@@ -118,7 +120,7 @@ def copy_files_with_prefix(
                     shutil.copy(src_path, dest_path)
                     print(f"Copied {file_name} from {src_folder} to {dest_folder}")
 
-                    label = file_name[:4]
+                    label = file_name[label_start_index : label_end_index + 1]
                     copied_labels[label] += 1
                     total_images_copied += 1
                     new_images_names.append(file_name)
@@ -155,5 +157,7 @@ if __name__ == "__main__":
         source_folder,
         destination_folder,
         labels,
+        label_start_index=0,
+        label_end_index=3,
         delete_previous=False,
     )
