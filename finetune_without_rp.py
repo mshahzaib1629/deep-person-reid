@@ -6,8 +6,6 @@ from representative_memory import (
     RepresentativeMemory,
     ChunkLoader,
 )
-
-
 torchreid.data.register_image_dataset("representative_memory", RepresentativeMemory)
 torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
@@ -15,21 +13,22 @@ torchreid.data.register_image_dataset("chunks", ChunkLoader)
 # - Excluding representative memory, Training source must be one at a time.
 #   data.json is used by memory loader for dataset processing (i.e. memory_loader -> [processors of datasets]) to extract the pId and cId
 # - labels.json is used for applying herding selection over labels.
-# - @TODO: weight_directory , representative_memory_directory comes from environment variables
 
+# - In this test, Representative Memory is not being used. We are fine tuning the existing model by updating the last classifier layer.
 
-def run_reid():
-    weight_directory = "log/resnet50/model/model.pth.tar-1"
-    representative_memory_directory = "reid-data/representative-memory"
-    should_update: bool = os.path.exists(weight_directory) and os.path.exists(
-        representative_memory_directory
-    )
+def run_reid(
+    source_dataset_name,
+    source_datasets,
+    target_datasets,
+    weight_directory,
+    rp_memory_dir,
+):
+    should_update: bool = os.path.exists(weight_directory)
 
-    source_dataset_name = "market1501"
     datamanager = torchreid.data.ImageDataManager(
         root="reid-data",
-        sources=["chunks", "representative_memory"],
-        targets="chunks",
+        sources=source_datasets,
+        targets=target_datasets,
         height=256,
         width=128,
         batch_size_train=32,
@@ -56,17 +55,18 @@ def run_reid():
 
     if should_update:
         torchreid.utils.load_pretrained_weights(model, weight_directory)
-
+        print("=> Updating Pre-trained Model")
         engine.run(
             save_dir="log/resnet50",
-            max_epoch=3,
+            max_epoch=15,
             eval_freq=10,
             print_freq=2,
             test_only=False,
-            fixbase_epoch=5,
+            fixbase_epoch=10,
             open_layers="classifier",
         )
     else:
+        print("=> Training A New Model")
         engine.run(
             save_dir="log/resnet50",
             max_epoch=3,
@@ -75,16 +75,18 @@ def run_reid():
             test_only=False,
         )
 
-    update_representative_memory(
-        train_loader=datamanager.train_loader,
-        current_dataset_name=source_dataset_name,
-        representative_memory_main_directory=representative_memory_directory,
-        label_start_index=0,
-        label_end_index=3,
-        selection_percent=0.5,
-        retain_percent=0.5,
-    )
-
 
 if __name__ == "__main__":
-    run_reid()
+    source_dataset_name = "market1501"
+    source_datasets = ["chunks"]
+    target_datasets = "chunks"
+    weight_directory = "log/resnet50/model/model.pth.tar-3-after-third-ter"
+    rp_memory_directory = "reid-data/representative-memory"
+
+    run_reid(
+        source_dataset_name,
+        source_datasets,
+        target_datasets,
+        weight_directory,
+        rp_memory_directory,
+    )
