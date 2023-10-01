@@ -41,6 +41,11 @@ class Engine(object):
         self._optims = OrderedDict()
         self._scheds = OrderedDict()
 
+        self.patience = 10  # Number of epochs to wait
+        self.desired_accuracy = 0.70  # Your desired accuracy threshold
+        self.epochs_without_improvement = 0
+        self.current_epoch_acc = 0
+
     def register_model(self, name='model', model=None, optim=None, sched=None):
         if self.__dict__.get('_models') is None:
             raise AttributeError(
@@ -109,6 +114,19 @@ class Engine(object):
         for name in names:
             if self._scheds[name] is not None:
                 self._scheds[name].step()
+
+    def early_stopping(self):
+        """Apply Early Stopping if desired accuracy is achieved for n no. of consecutive epochs."""
+        if self.current_epoch_acc >= self.desired_accuracy:
+                self.epochs_without_improvement += 1
+                if self.epochs_without_improvement >= self.patience:
+                    print(f"=> Early stopping: Achieved {self.desired_accuracy*100:.2f}% accuracy for {self.patience} consecutive epochs.")
+                    return True
+                else:
+                    return False
+        else:
+                self.epochs_without_improvement = 0
+                return False
 
     def run(
         self,
@@ -207,6 +225,9 @@ class Engine(object):
                     ranks=ranks
                 )
                 self.save_model(self.epoch, rank1, save_dir)
+                
+            if self.early_stopping() == True:
+                break
 
         if self.max_epoch > 0:
             print('=> Final test')
@@ -284,6 +305,7 @@ class Engine(object):
 
             end = time.time()
 
+        self.current_epoch_acc = losses.meters['acc'].avg
         self.update_lr()
 
     def forward_backward(self, data):
