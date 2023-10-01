@@ -34,6 +34,9 @@ class AdjustNewImages:
 
     name_dataset_dict = {}
 
+    # @TODO: Make labels.json w.r.t dataset names
+    # @TODO: Apply Herding Selection on labels w.r.t dataset names. Currently it's being applied on all the matching label names irrespect of dataset names
+
     def exclude_representative_memory_images(self, train_images):
         """train_images also contain images from representative memory (if it's used). This function will exclude them and only return new images"""
         new_images = [

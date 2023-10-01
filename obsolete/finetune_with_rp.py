@@ -18,7 +18,6 @@ torchreid.data.register_image_dataset("chunks", ChunkLoader)
 
 # - In this test, Representative Memory is being used. We are also fine tuning the existing model by updating the last classifier layer.
 
-
 def run_reid(
     source_dataset_name,
     source_datasets,
