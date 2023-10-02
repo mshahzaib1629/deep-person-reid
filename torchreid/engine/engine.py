@@ -41,10 +41,11 @@ class Engine(object):
         self._optims = OrderedDict()
         self._scheds = OrderedDict()
 
-        self.patience = 10  # Number of epochs to wait
-        self.desired_accuracy = 0.70  # Your desired accuracy threshold
         self.epochs_without_improvement = 0
-        self.current_epoch_acc = 0
+        self.last_epoch_summary = {
+            "loss": 0,
+            "acc": 0
+        }
 
     def register_model(self, name='model', model=None, optim=None, sched=None):
         if self.__dict__.get('_models') is None:
@@ -117,7 +118,7 @@ class Engine(object):
 
     def early_stopping(self):
         """Apply Early Stopping if desired accuracy is achieved for n no. of consecutive epochs."""
-        if self.current_epoch_acc >= self.desired_accuracy:
+        if self.last_epoch_summary['acc'] >= self.desired_accuracy:
                 self.epochs_without_improvement += 1
                 if self.epochs_without_improvement >= self.patience:
                     print(f"=> Early stopping: Achieved {self.desired_accuracy*100:.2f}% accuracy for {self.patience} consecutive epochs.")
@@ -145,7 +146,10 @@ class Engine(object):
         visrank_topk=10,
         use_metric_cuhk03=False,
         ranks=[1, 5, 10, 20],
-        rerank=False
+        rerank=False,
+        use_early_stopping=False,
+        patience=10,
+        desired_accuracy=0.70
     ):
         r"""A unified pipeline for training and evaluating a model.
 
@@ -176,6 +180,11 @@ class Engine(object):
             ranks (list, optional): cmc ranks to be computed. Default is [1, 5, 10, 20].
             rerank (bool, optional): uses person re-ranking (by Zhong et al. CVPR'17).
                 Default is False. This is only enabled when test_only=True.
+            use_early_stopping (bool, optional): Flag to enable Early Stopping on achieving desired 
+                result. Default is False.
+            patience (int, optional): No. of epochs to wait for change before Early Stopping. Default is 10.
+            desired_accuracy (float, optional): Target accuracy for Early Stopping. Its value must be between 
+                0 and 1. Default is 0.70.
         """
 
         if visrank and not test_only:
@@ -202,6 +211,8 @@ class Engine(object):
         time_start = time.time()
         self.start_epoch = start_epoch
         self.max_epoch = max_epoch
+        self.patience = patience
+        self.desired_accuracy = desired_accuracy
         print('=> Start training')
 
         for self.epoch in range(self.start_epoch, self.max_epoch):
@@ -226,7 +237,7 @@ class Engine(object):
                 )
                 self.save_model(self.epoch, rank1, save_dir)
                 
-            if self.early_stopping() == True:
+            if use_early_stopping and self.early_stopping() == True:
                 break
 
         if self.max_epoch > 0:
@@ -305,7 +316,8 @@ class Engine(object):
 
             end = time.time()
 
-        self.current_epoch_acc = losses.meters['acc'].avg
+        self.last_epoch_summary['acc'] = losses.meters['acc'].avg
+        self.last_epoch_summary['loss'] = losses.meters['loss'].avg
         self.update_lr()
 
     def forward_backward(self, data):

@@ -50,12 +50,15 @@ def run_reid(
         print("=> Updating Pre-trained Model")
         engine.run(
             save_dir="log/resnet50",
-            max_epoch=2,
+            max_epoch=10,
             eval_freq=10,
             print_freq=2,
             test_only=False,
             fixbase_epoch=10,
             open_layers="classifier",
+            use_early_stopping=True,
+            patience=2,
+            desired_accuracy=0.30
         )
     else:
         print("=> Training A New Model")
@@ -65,6 +68,9 @@ def run_reid(
             eval_freq=10,
             print_freq=2,
             test_only=False,
+            use_early_stopping=True,
+            patience=2,
+            desired_accuracy=0.30
         )
 
     if isinstance(rp_memory_dir, str):
