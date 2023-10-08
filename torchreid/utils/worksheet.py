@@ -92,22 +92,27 @@ def update_worksheet(
             if train_time_elapsed is not None:
                 worksheet.update_acell(f"C{target_row}", train_time_elapsed)
 
-            if epochs_elapsed is not None:
-                worksheet.update_acell(f"D{target_row}", epochs_elapsed)
+            if epochs_elapsed is not None and last_epoch_summary is not None:
+                cell_list = worksheet.range(f"D{target_row}:F{target_row}")
+                summary_obj = {
+                    "loss": f"{last_epoch_summary['loss']:.4f}",
+                    "acc": f"{last_epoch_summary['acc']:.4f}",
+                }
+                worksheet_epoch_logs = worksheet.acell(f"F{target_row}")
+                if isinstance(worksheet_epoch_logs.value, str):
+                    epoch_logs = json.loads(worksheet_epoch_logs.value)
+                else:
+                    epoch_logs = {}
 
-            if last_epoch_summary is not None:
-                worksheet.update_acell(
-                    f"E{target_row}",
-                    json.dumps(
-                        {
-                            "loss": f"{last_epoch_summary['loss']:.4f}",
-                            "acc": f"{last_epoch_summary['acc']:.4f}",
-                        }
-                    ),
-                )
+                epoch_logs.update({f"epoch_{epochs_elapsed}": summary_obj})
+                cell_list[0].value = epochs_elapsed
+                cell_list[1].value = json.dumps(summary_obj)
+                cell_list[2].value = json.dumps(epoch_logs)
+
+                worksheet.update_cells(cell_list)
 
             if test_results is not None:
-                cell_list = worksheet.range(f"F{target_row}:J{target_row}")
+                cell_list = worksheet.range(f"G{target_row}:K{target_row}")
                 cell_list[0].value = test_results["mAP"]
                 cell_list[1].value = test_results["Rank-1"]
                 cell_list[2].value = test_results["Rank-5"]
@@ -117,23 +122,23 @@ def update_worksheet(
                 worksheet.update_cells(cell_list)
 
             if weights_produced is not None:
-                worksheet.update_acell(f"K{target_row}", weights_produced)
+                worksheet.update_acell(f"L{target_row}", weights_produced)
 
             if metadata is not None:
-                sheet_meta = worksheet.acell(f"L{target_row}")
+                sheet_meta = worksheet.acell(f"M{target_row}")
                 if isinstance(sheet_meta.value, str):
                     sheet_meta = json.loads(sheet_meta.value)
                 else:
                     sheet_meta = {}
                 sheet_meta.update(metadata)
-                worksheet.update_acell(f"L{target_row}", json.dumps(sheet_meta))
+                worksheet.update_acell(f"M{target_row}", json.dumps(sheet_meta))
 
             if session_completed == True:
                 session_completed_at = datetime.datetime.fromtimestamp(time.time())
                 session_completed_at = session_completed_at.strftime(
                     "%Y-%m-%d %H:%M:%S"
                 )
-                worksheet.update_acell(f"M{target_row}", session_completed_at)
+                worksheet.update_acell(f"N{target_row}", session_completed_at)
 
                 os.remove(file_path)
 

@@ -95,7 +95,7 @@ def finetune_with_rp(comments="Finetuning with RP"):
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
-    weight_directory = "log/resnet50/model/model.pth.tar-2"
+    weight_directory = "log/resnet50/model/model.pth.tar-5"
     rp_memory_directory = RP_MEMORY_DIR
 
     print("\n=> Started training with finetuning and representative memory\n")
@@ -111,12 +111,12 @@ def finetune_with_rp(comments="Finetuning with RP"):
         use_early_stopping=True,
         epochs=500,
         patience=5,
-        desired_accuracy=0.70,
+        desired_accuracy=0.90,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
     )
 
 
 if __name__ == "__main__":
-    COMMENTS = "Trying to add count of new & rp images in google sheet."
+    COMMENTS = "Finetuning with train/c12 chunk that contain 2706 images of 150 identities. For query and gallery, query/c11 & gallery/c11 are used respectively."
     finetune_with_rp(comments=COMMENTS)
