@@ -11,7 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torchreid import metrics
 from torchreid.utils import (
     MetricMeter, AverageMeter, re_ranking, open_all_layers, save_checkpoint,
-    open_specified_layers, visualize_ranked_results
+    open_specified_layers, visualize_ranked_results, update_worksheet
 )
 from torchreid.losses import DeepSupervision
 
@@ -214,6 +214,7 @@ class Engine(object):
         self.patience = patience
         self.desired_accuracy = desired_accuracy
         print('=> Start training')
+        update_worksheet(train_start_time=time_start)
 
         for self.epoch in range(self.start_epoch, self.max_epoch):
             self.train(
@@ -236,7 +237,8 @@ class Engine(object):
                     ranks=ranks
                 )
                 self.save_model(self.epoch, rank1, save_dir)
-                
+
+            update_worksheet(epochs_elapsed=self.epoch+1, last_epoch_summary=self.last_epoch_summary)
             if use_early_stopping and self.early_stopping() == True:
                 break
 
@@ -256,6 +258,7 @@ class Engine(object):
         elapsed = round(time.time() - time_start)
         elapsed = str(datetime.timedelta(seconds=elapsed))
         print('Elapsed {}'.format(elapsed))
+        update_worksheet(train_time_elapsed=elapsed)
         if self.writer is not None:
             self.writer.close()
 
@@ -447,11 +450,15 @@ class Engine(object):
             use_metric_cuhk03=use_metric_cuhk03
         )
 
+        test_results_for_worksheet = {}
         print('** Results **')
         print('mAP: {:.1%}'.format(mAP))
+        test_results_for_worksheet['mAP'] = '{:.3%}'.format(mAP)
         print('CMC curve')
         for r in ranks:
             print('Rank-{:<3}: {:.1%}'.format(r, cmc[r - 1]))
+            test_results_for_worksheet[f'Rank-{r}'] = '{:.3%}'.format(cmc[r - 1])
+        update_worksheet(test_results=test_results_for_worksheet)
 
         if visrank:
             visualize_ranked_results(

@@ -7,6 +7,7 @@ from functools import partial
 from collections import OrderedDict
 import torch
 import torch.nn as nn
+from .worksheet import update_worksheet
 
 from .tools import mkdir_if_missing
 
@@ -53,6 +54,7 @@ def save_checkpoint(
     epoch = state['epoch']
     fpath = osp.join(save_dir, 'model.pth.tar-' + str(epoch))
     torch.save(state, fpath)
+    update_worksheet(weights_produced=fpath)
     print('Checkpoint saved to "{}"'.format(fpath))
     if is_best:
         shutil.copy(fpath, osp.join(osp.dirname(fpath), 'model-best.pth.tar'))

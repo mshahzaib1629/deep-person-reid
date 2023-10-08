@@ -5,6 +5,7 @@ import math
 from .herding_selection import herding_selection
 import json
 from .utils import get_name_dataset_dict, update_data_json
+from torchreid.utils import update_worksheet
 
 
 class AdjustNewImages:
@@ -44,6 +45,14 @@ class AdjustNewImages:
             for i in train_images
             if i["path"].find(self.representative_memory_directory) == -1
         ]
+        update_worksheet(
+            metadata={
+                "images_trained_on": {
+                    "new": len(new_images),
+                    "rp_memory": len(train_images) - len(new_images),
+                }
+            }
+        )
         return new_images
 
     def group_train_images(self):
