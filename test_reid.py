@@ -63,7 +63,7 @@ def finetune_without_rp(comments="Finetuining without RP"):
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
-    weight_directory = "log/resnet50/model/model.pth.tar-13"
+    weight_directory = "log/resnet50/model/model.pth.tar-20"
     rp_memory_directory = None
 
     print("\n=> Started training with finetuning without representative memory\n")
@@ -76,12 +76,14 @@ def finetune_without_rp(comments="Finetuining without RP"):
         target_datasets,
         weight_directory,
         rp_memory_directory,
+        fixed_epochs=5,
         use_early_stopping=True,
         epochs=500,
         patience=10,
         desired_accuracy=0.90,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
+        resume_training=False
     )
 
 
@@ -118,5 +120,5 @@ def finetune_with_rp(comments="Finetuning with RP"):
 
 
 if __name__ == "__main__":
-    COMMENTS = "Finetuning with train/c13 chunk that contain 2649 images of 150 identities without using RP. For query and gallery, query/c11 & gallery/c11 are used respectively."
+    COMMENTS = "Finetuning with train/c14 chunk that contain 2788 images of 150 identities without using RP. In this test, we are training only classifier layer for first 5 epochs. After 5 epochs, all the layers will be finetuned. For query and gallery, query/c11 & gallery/c11 are used respectively."
     finetune_without_rp(comments=COMMENTS)

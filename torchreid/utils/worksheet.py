@@ -38,6 +38,7 @@ def _get_first_empty_row(worksheet):
 def update_worksheet(
     excel_link: str = None,
     worksheet_name: str = None,
+    worksheet_connector: str = None,
     train_start_time: float = None,
     train_time_elapsed: float = None,
     comments: str = None,
@@ -49,13 +50,11 @@ def update_worksheet(
     session_completed: bool = False,
 ):
     try:
-        file_path = "./temp.json"
-
         if excel_link is not None and worksheet_name is not None:
             worksheet = _get_worksheet(excel_link, worksheet_name)
             target_row = _get_first_empty_row(worksheet)
 
-            with open(file_path, "w") as json_file:
+            with open(worksheet_connector, "w") as json_file:
                 json.dump(
                     {
                         "excel_link": excel_link,
@@ -67,9 +66,9 @@ def update_worksheet(
                 )
                 json_file.close()
 
-        if os.path.exists(file_path):
+        if os.path.exists(worksheet_connector):
             json_data = {}
-            with open(file_path, "r") as json_file:
+            with open(worksheet_connector, "r") as json_file:
                 json_data = json.load(json_file)
                 json_file.close()
 
@@ -175,7 +174,7 @@ def update_worksheet(
                 )
                 worksheet.update_acell(f"N{target_row}", session_completed_at)
 
-                os.remove(file_path)
+                os.remove(worksheet_connector)
 
         else:
             return
