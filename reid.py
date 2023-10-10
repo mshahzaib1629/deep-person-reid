@@ -1,7 +1,10 @@
 import torchreid
 import os
 from torchsummary import summary
-from representative_memory import update_representative_memory
+from representative_memory import (
+    update_representative_memory,
+    seperate_new_and_rp_images,
+)
 from torchreid.utils.worksheet import update_worksheet
 
 
@@ -15,6 +18,7 @@ def run_reid(
     rp_memory_dir,
     label_start_index,
     label_end_index,
+    eval_freq=10,
     epochs=2,
     fixed_epochs=None,
     use_early_stopping=False,
@@ -28,6 +32,7 @@ def run_reid(
         "source_dataset": source_dataset_name,
         "target_datasets": target_datasets,
         "max_epochs": epochs,
+        "eval_freq": eval_freq,
         "used_early_stopping": use_early_stopping,
     }
 
@@ -41,12 +46,6 @@ def run_reid(
         metadata["patience"] = patience
         metadata["desired_accuracy"] = desired_accuracy
 
-    update_worksheet(
-        excel_link="https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing",
-        worksheet_name=worksheet_name,
-        comments=comments,
-        metadata=metadata,
-    )
     datamanager = torchreid.data.ImageDataManager(
         root="reid-data",
         sources=source_datasets,
@@ -56,6 +55,20 @@ def run_reid(
         batch_size_train=32,
         batch_size_test=100,
         transforms=["random_flip", "random_crop"],
+    )
+
+    new_images, rp_images = seperate_new_and_rp_images(
+        datamanager.train_loader, rp_memory_dir
+    )
+    metadata["images_trained_on"] = {}
+    metadata["images_trained_on"]["new"] = len(new_images)
+    metadata["images_trained_on"]["rp_memory"] = len(rp_images)
+
+    update_worksheet(
+        excel_link="https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing",
+        worksheet_name=worksheet_name,
+        comments=comments,
+        metadata=metadata,
     )
 
     model = torchreid.models.build_model(
@@ -81,7 +94,7 @@ def run_reid(
         engine.run(
             save_dir="log/resnet50",
             max_epoch=epochs,
-            eval_freq=10,
+            eval_freq=eval_freq,
             print_freq=2,
             test_only=False,
             fixbase_epoch=fixed_epochs,
@@ -95,7 +108,7 @@ def run_reid(
         engine.run(
             save_dir="log/resnet50",
             max_epoch=epochs,
-            eval_freq=10,
+            eval_freq=eval_freq,
             print_freq=2,
             test_only=False,
             use_early_stopping=use_early_stopping,

@@ -34,6 +34,25 @@ def extract_images_from_loader(train_loader):
     return images
 
 
+def seperate_new_and_rp_images(train_loader, representative_memory_directory):
+    """train_images also contain images from representative memory (if it's used). This function will seperate the new and representative memory images."""
+
+    train_images = extract_images_from_loader(train_loader)
+    new_images = []
+    rp_images = []
+    for i in train_images:
+        if (
+            isinstance(representative_memory_directory, str)
+            and i["path"].find(representative_memory_directory) > -1
+            
+        ):   
+            rp_images.append(i)
+        else:
+            new_images.append(i)
+
+    return new_images, rp_images
+
+
 def update_representative_memory(
     train_loader,
     current_dataset_name,
@@ -49,7 +68,9 @@ def update_representative_memory(
     if not os.path.exists(representative_memory_main_directory):
         os.makedirs(representative_memory_main_directory)
 
-    train_images = extract_images_from_loader(train_loader)
+    new_images, rp_images = seperate_new_and_rp_images(
+        train_loader, representative_memory_main_directory
+    )
     RetainExistingMemory(
         representative_memory_main_directory,
         retain_percent=retain_percent,
@@ -58,7 +79,7 @@ def update_representative_memory(
     AdjustNewImages(
         current_dataset_name,
         representative_memory_main_directory,
-        train_images=train_images,
+        train_images=new_images,
         selection_percent=selection_percent,
         label_start_index=label_start_index,
         label_end_index=label_end_index,

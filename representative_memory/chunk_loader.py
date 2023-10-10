@@ -9,9 +9,9 @@ from .utils import process_datasets
 class ChunkLoader(ImageDataset):
     """Chunk Loader"""
 
-    TRAIN_CHUNK = "c2"
-    QUERY_CHUNK = "c1"
-    GALLERY_CHUNK = "c2"
+    TRAIN_CHUNK = "c13"
+    QUERY_CHUNK = "c11"
+    GALLERY_CHUNK = "c11"
 
     _junk_pids = [0, -1]
     dataset_dir = "chunks"

@@ -46,8 +46,8 @@ def fresh_train_with_rp(comments="Fresh training with RP"):
         rp_memory_directory,
         use_early_stopping=True,
         epochs=500,
-        patience=3,
-        desired_accuracy=0.45,
+        patience=5,
+        desired_accuracy=0.85,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
     )
@@ -63,7 +63,7 @@ def finetune_without_rp(comments="Finetuining without RP"):
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
-    weight_directory = "log/resnet50/model/model.pth.tar-2"
+    weight_directory = "log/resnet50/model/model.pth.tar-13"
     rp_memory_directory = None
 
     print("\n=> Started training with finetuning without representative memory\n")
@@ -78,8 +78,8 @@ def finetune_without_rp(comments="Finetuining without RP"):
         rp_memory_directory,
         use_early_stopping=True,
         epochs=500,
-        patience=3,
-        desired_accuracy=0.45,
+        patience=10,
+        desired_accuracy=0.90,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
     )
@@ -111,12 +111,12 @@ def finetune_with_rp(comments="Finetuning with RP"):
         use_early_stopping=True,
         epochs=500,
         patience=5,
-        desired_accuracy=0.90,
+        desired_accuracy=0.85,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
     )
 
 
 if __name__ == "__main__":
-    COMMENTS = "Finetuning with train/c12 chunk that contain 2706 images of 150 identities. For query and gallery, query/c11 & gallery/c11 are used respectively."
-    finetune_with_rp(comments=COMMENTS)
+    COMMENTS = "Finetuning with train/c13 chunk that contain 2649 images of 150 identities without using RP. For query and gallery, query/c11 & gallery/c11 are used respectively."
+    finetune_without_rp(comments=COMMENTS)

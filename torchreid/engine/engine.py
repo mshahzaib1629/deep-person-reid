@@ -118,7 +118,7 @@ class Engine(object):
 
     def early_stopping(self):
         """Apply Early Stopping if desired accuracy is achieved for n no. of consecutive epochs."""
-        if self.last_epoch_summary['acc'] >= self.desired_accuracy:
+        if self.last_epoch_summary['acc'] >= self.desired_accuracy * 100:
                 self.epochs_without_improvement += 1
                 if self.epochs_without_improvement >= self.patience:
                     print(f"=> Early stopping: Achieved {self.desired_accuracy*100:.2f}% accuracy for {self.patience} consecutive epochs.")
@@ -223,6 +223,8 @@ class Engine(object):
                 open_layers=open_layers
             )
 
+            update_worksheet(epochs_elapsed=self.epoch+1, last_epoch_summary=self.last_epoch_summary)
+
             if (self.epoch + 1) >= start_eval \
                and eval_freq > 0 \
                and (self.epoch+1) % eval_freq == 0 \
@@ -238,7 +240,6 @@ class Engine(object):
                 )
                 self.save_model(self.epoch, rank1, save_dir)
 
-            update_worksheet(epochs_elapsed=self.epoch+1, last_epoch_summary=self.last_epoch_summary)
             if use_early_stopping and self.early_stopping() == True:
                 break
 
@@ -458,7 +459,7 @@ class Engine(object):
         for r in ranks:
             print('Rank-{:<3}: {:.1%}'.format(r, cmc[r - 1]))
             test_results_for_worksheet[f'Rank-{r}'] = '{:.3%}'.format(cmc[r - 1])
-        update_worksheet(test_results=test_results_for_worksheet)
+        update_worksheet(epochs_elapsed= self.epoch+1, test_results=test_results_for_worksheet)
 
         if visrank:
             visualize_ranked_results(

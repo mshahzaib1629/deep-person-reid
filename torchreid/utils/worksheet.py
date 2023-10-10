@@ -34,6 +34,7 @@ def _get_first_empty_row(worksheet):
     # If all cells are occupied, return the next row
     return len(column_values) + 1
 
+
 def update_worksheet(
     excel_link: str = None,
     worksheet_name: str = None,
@@ -111,13 +112,47 @@ def update_worksheet(
 
                 worksheet.update_cells(cell_list)
 
-            if test_results is not None:
+            if epochs_elapsed is not None and test_results is not None:
                 cell_list = worksheet.range(f"G{target_row}:K{target_row}")
-                cell_list[0].value = test_results["mAP"]
-                cell_list[1].value = test_results["Rank-1"]
-                cell_list[2].value = test_results["Rank-5"]
-                cell_list[3].value = test_results["Rank-10"]
-                cell_list[4].value = test_results["Rank-20"]
+
+                worksheet_mAP_logs = worksheet.acell(f"G{target_row}")
+                worksheet_rank1_logs = worksheet.acell(f"H{target_row}")
+                worksheet_rank5_logs = worksheet.acell(f"I{target_row}")
+                worksheet_rank10_logs = worksheet.acell(f"J{target_row}")
+                worksheet_rank20_logs = worksheet.acell(f"K{target_row}")
+
+                if isinstance(worksheet_mAP_logs.value, str):
+                    mAP_logs = json.loads(worksheet_mAP_logs.value)
+                else:
+                    mAP_logs = {}
+                if isinstance(worksheet_rank1_logs.value, str):
+                    rank1_logs = json.loads(worksheet_rank1_logs.value)
+                else:
+                    rank1_logs = {}
+                if isinstance(worksheet_rank5_logs.value, str):
+                    rank5_logs = json.loads(worksheet_rank5_logs.value)
+                else:
+                    rank5_logs = {}
+                if isinstance(worksheet_rank10_logs.value, str):
+                    rank10_logs = json.loads(worksheet_rank10_logs.value)
+                else:
+                    rank10_logs = {}
+                if isinstance(worksheet_rank20_logs.value, str):
+                    rank20_logs = json.loads(worksheet_rank20_logs.value)
+                else:
+                    rank20_logs = {}
+
+                mAP_logs.update({f"epoch_{epochs_elapsed}": test_results["mAP"]})
+                rank1_logs.update({f"epoch_{epochs_elapsed}": test_results["Rank-1"]})
+                rank5_logs.update({f"epoch_{epochs_elapsed}": test_results["Rank-5"]})
+                rank10_logs.update({f"epoch_{epochs_elapsed}": test_results["Rank-10"]})
+                rank20_logs.update({f"epoch_{epochs_elapsed}": test_results["Rank-20"]})
+
+                cell_list[0].value = json.dumps(mAP_logs)
+                cell_list[1].value = json.dumps(rank1_logs)
+                cell_list[2].value = json.dumps(rank5_logs)
+                cell_list[3].value = json.dumps(rank10_logs)
+                cell_list[4].value = json.dumps(rank20_logs)
 
                 worksheet.update_cells(cell_list)
 

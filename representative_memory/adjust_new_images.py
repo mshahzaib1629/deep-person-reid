@@ -28,7 +28,7 @@ class AdjustNewImages:
             representative__memory_main_directory, "memory"
         )
         self.current_dataset_name = current_dataset_name
-        self.train_images = self.exclude_representative_memory_images(train_images)
+        self.train_images = train_images
         self.selection_percent = selection_percent
         self.label_start_index = label_start_index
         self.label_end_index = label_end_index + 1
@@ -38,22 +38,6 @@ class AdjustNewImages:
     # @TODO: Make labels.json w.r.t dataset names
     # @TODO: Apply Herding Selection on labels w.r.t dataset names. Currently it's being applied on all the matching label names irrespect of dataset names
 
-    def exclude_representative_memory_images(self, train_images):
-        """train_images also contain images from representative memory (if it's used). This function will exclude them and only return new images"""
-        new_images = [
-            i
-            for i in train_images
-            if i["path"].find(self.representative_memory_directory) == -1
-        ]
-        update_worksheet(
-            metadata={
-                "images_trained_on": {
-                    "new": len(new_images),
-                    "rp_memory": len(train_images) - len(new_images),
-                }
-            }
-        )
-        return new_images
 
     def group_train_images(self):
         """Group images based on their labels/classes."""
