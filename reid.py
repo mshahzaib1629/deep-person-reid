@@ -65,13 +65,15 @@ def run_reid(
     metadata["images_trained_on"]["new"] = len(new_images)
     metadata["images_trained_on"]["rp_memory"] = len(rp_images)
 
-    worksheet_connector = "./worksheet_connector.json"
-    if resume_training == False and os.path.exists(worksheet_connector) == False:
+    os.environ["WORKSHEET_CONNECTOR_PATH"] = "./worksheet_connector.json"
+    if (
+        resume_training == False
+        and os.path.exists(os.environ.get("WORKSHEET_CONNECTOR_PATH")) == False
+    ):
         # if training is not resumed and temp.json do not exist to target a row in worksheet, create new row entry
         update_worksheet(
             excel_link="https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing",
             worksheet_name=worksheet_name,
-            worksheet_connector=worksheet_connector,
             comments=comments,
             metadata=metadata,
         )
@@ -130,6 +132,8 @@ def run_reid(
             max_epoch=epochs,
             start_epoch=start_epoch,
             eval_freq=eval_freq,
+            fixbase_epoch=fixed_epochs,
+            open_layers="classifier",
             print_freq=2,
             test_only=False,
             use_early_stopping=use_early_stopping,

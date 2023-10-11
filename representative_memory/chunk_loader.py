@@ -9,7 +9,7 @@ from .utils import process_datasets
 class ChunkLoader(ImageDataset):
     """Chunk Loader"""
 
-    TRAIN_CHUNK = "c14"
+    TRAIN_CHUNK = "c15"
     QUERY_CHUNK = "c11"
     GALLERY_CHUNK = "c11"
 
