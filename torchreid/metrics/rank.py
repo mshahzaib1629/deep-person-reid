@@ -125,7 +125,8 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         # compute cmc curve
         raw_cmc = matches[q_idx][
             keep] # binary vector, positions with value 1 are correct matches
-        if not np.any(raw_cmc):
+        
+        if not np.any(raw_cmc) or len(g_pids[order] == q_pid) == len(raw_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
 

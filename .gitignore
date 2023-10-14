@@ -140,3 +140,4 @@ saved-models/
 model-zoo/
 debug*
 excel-service-key.json
+worksheet_connector.json
