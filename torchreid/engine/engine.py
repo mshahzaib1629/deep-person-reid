@@ -41,11 +41,19 @@ class Engine(object):
         self._optims = OrderedDict()
         self._scheds = OrderedDict()
 
-        self.epochs_without_improvement = 0
+        self.eval_without_improvement = 0
         self.last_epoch_summary = {
             "loss": 0,
             "acc": 0
         }
+        self.last_eval_score = {
+            "mAP": 0,
+            "Rank-1": 0,
+            "Rank-5": 0,
+            "Rank-10": 0,
+            "Rank-20": 0
+        }
+        self.is_early_stopping_achieved = False
 
     def register_model(self, name='model', model=None, optim=None, sched=None):
         if self.__dict__.get('_models') is None:
@@ -118,15 +126,24 @@ class Engine(object):
 
     def early_stopping(self):
         """Apply Early Stopping if desired accuracy is achieved for n no. of consecutive epochs."""
-        if self.last_epoch_summary['acc'] >= self.desired_accuracy * 100:
-                self.epochs_without_improvement += 1
-                if self.epochs_without_improvement >= self.patience:
-                    print(f"=> Early stopping: Achieved {self.desired_accuracy*100:.2f}% accuracy for {self.patience} consecutive epochs.")
+        
+        available_eval_matrix = ['mAP', 'Rank-1', 'Rank-5', 'Rank-10', 'Rank-20']
+
+        if self.early_stopping_eval_matric not in available_eval_matrix:
+            print(f'{self.early_stopping_eval_matric} is not a valid evaluation matric.')
+            return False
+        
+        eval_score = float(self.last_eval_score[self.early_stopping_eval_matric].strip('%'))
+    
+        if eval_score >= self.desired_accuracy * 100:
+                self.eval_without_improvement += 1
+                if self.eval_without_improvement >= self.eval_patience:
+                    print(f"=> Early stopping: Achieved {self.desired_accuracy*100:.2f}% {self.early_stopping_eval_matric} accuracy for {self.eval_patience} consecutive evaluations.")
                     return True
                 else:
                     return False
         else:
-                self.epochs_without_improvement = 0
+                self.eval_without_improvement = 0
                 return False
 
     def run(
@@ -148,7 +165,8 @@ class Engine(object):
         ranks=[1, 5, 10, 20],
         rerank=False,
         use_early_stopping=False,
-        patience=10,
+        early_stopping_eval_matric="Rank-5",
+        eval_patience=2,
         desired_accuracy=0.70
     ):
         r"""A unified pipeline for training and evaluating a model.
@@ -182,7 +200,9 @@ class Engine(object):
                 Default is False. This is only enabled when test_only=True.
             use_early_stopping (bool, optional): Flag to enable Early Stopping on achieving desired 
                 result. Default is False.
-            patience (int, optional): No. of epochs to wait for change before Early Stopping. Default is 10.
+            early_stopping_eval_matric (str, optional): Evaluation matric which should be used in early stopping mechanism. 
+                It should must be one of these: ['mAP', 'Rank-1', 'Rank-5', 'Rank-10', 'Rank-20']. Default is 'Rank-5'.
+            eval_patience (int, optional): No. of evaluations to wait for change before Early Stopping. Default is 2.
             desired_accuracy (float, optional): Target accuracy for Early Stopping. Its value must be between 
                 0 and 1. Default is 0.70.
         """
@@ -211,7 +231,8 @@ class Engine(object):
         time_start = time.time()
         self.start_epoch = start_epoch
         self.max_epoch = max_epoch
-        self.patience = patience
+        self.eval_patience = eval_patience
+        self.early_stopping_eval_matric = early_stopping_eval_matric
         self.desired_accuracy = desired_accuracy
         print('=> Start training')
         update_worksheet(train_start_time=time_start)
@@ -223,7 +244,10 @@ class Engine(object):
                 open_layers=open_layers
             )
 
-            update_worksheet(epochs_elapsed=self.epoch+1, last_epoch_summary=self.last_epoch_summary)
+            elapsed_time_upto_this_epoch = round(time.time() - time_start)
+            elapsed_time_upto_this_epoch = str(datetime.timedelta(seconds=elapsed_time_upto_this_epoch))
+            
+            update_worksheet(train_time_elapsed= elapsed_time_upto_this_epoch, epochs_elapsed=self.epoch+1, last_epoch_summary=self.last_epoch_summary)
 
             if (self.epoch + 1) >= start_eval \
                and eval_freq > 0 \
@@ -240,10 +264,11 @@ class Engine(object):
                 )
                 self.save_model(self.epoch, rank1, save_dir)
 
-            if use_early_stopping and self.early_stopping() == True:
-                break
+                if use_early_stopping and self.early_stopping() == True:
+                    self.is_early_stopping_achieved = True
+                    break
 
-        if self.max_epoch > 0:
+        if self.max_epoch > 0 and self.is_early_stopping_achieved == False:
             print('=> Final test')
             rank1 = self.test(
                 dist_metric=dist_metric,
@@ -451,15 +476,15 @@ class Engine(object):
             use_metric_cuhk03=use_metric_cuhk03
         )
 
-        test_results_for_worksheet = {}
         print('** Results **')
         print('mAP: {:.1%}'.format(mAP))
-        test_results_for_worksheet['mAP'] = '{:.3%}'.format(mAP)
+        self.last_eval_score['mAP'] = '{:.3%}'.format(mAP)
         print('CMC curve')
         for r in ranks:
             print('Rank-{:<3}: {:.1%}'.format(r, cmc[r - 1]))
-            test_results_for_worksheet[f'Rank-{r}'] = '{:.3%}'.format(cmc[r - 1])
-        update_worksheet(epochs_elapsed= self.epoch+1, test_results=test_results_for_worksheet)
+            self.last_eval_score[f'Rank-{r}'] = '{:.3%}'.format(cmc[r - 1])
+        
+        update_worksheet(epochs_elapsed= self.epoch+1, test_results=self.last_eval_score)
 
         if visrank:
             visualize_ranked_results(

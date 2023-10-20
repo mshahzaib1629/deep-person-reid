@@ -46,8 +46,10 @@ def fresh_train_with_rp(comments="Fresh training with RP"):
         rp_memory_directory,
         use_early_stopping=True,
         epochs=500,
-        patience=5,
-        desired_accuracy=0.85,
+        eval_freq=10,
+        eval_patience=2,
+        early_stopping_eval_matric='Rank-5',
+        desired_accuracy=0.70,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
     )
@@ -79,8 +81,10 @@ def finetune_without_rp(comments="Finetuining without RP"):
         fixed_epochs=5,
         use_early_stopping=True,
         epochs=500,
-        patience=10,
-        desired_accuracy=0.90,
+        eval_freq=10,
+        eval_patience=2,
+        early_stopping_eval_matric='Rank-5',
+        desired_accuracy=0.70,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
         resume_training=False
@@ -112,13 +116,15 @@ def finetune_with_rp(comments="Finetuning with RP"):
         rp_memory_directory,
         use_early_stopping=True,
         epochs=500,
-        patience=5,
-        desired_accuracy=0.85,
+        eval_freq=10,
+        eval_patience=2,
+        early_stopping_eval_matric='Rank-5',
+        desired_accuracy=0.70,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
     )
 
 
 if __name__ == "__main__":
-    COMMENTS = "Finetuning with train/c15 chunk that contain 2393 images of 151 identities without using RP. In this test, we are training only classifier layer for first 5 epochs. After 5 epochs, all the layers will be finetuned. For query and gallery, query/c11 & gallery/c11 are used respectively."
+    COMMENTS = "Adding eval based early stopping"
     finetune_without_rp(comments=COMMENTS)

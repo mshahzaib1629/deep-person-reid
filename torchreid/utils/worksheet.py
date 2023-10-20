@@ -89,11 +89,8 @@ def update_worksheet(
                 worksheet.update_acell(f"B{target_row}", train_start_time)
                 worksheet.update_acell(f"D{target_row}", 0)
 
-            if train_time_elapsed is not None:
-                worksheet.update_acell(f"C{target_row}", train_time_elapsed)
-
-            if epochs_elapsed is not None and last_epoch_summary is not None:
-                cell_list = worksheet.range(f"D{target_row}:F{target_row}")
+            if train_time_elapsed is not None and epochs_elapsed is not None and last_epoch_summary is not None:
+                cell_list = worksheet.range(f"C{target_row}:F{target_row}")
                 summary_obj = {
                     "loss": f"{last_epoch_summary['loss']:.4f}",
                     "acc": f"{last_epoch_summary['acc']:.4f}",
@@ -105,11 +102,16 @@ def update_worksheet(
                     epoch_logs = {}
 
                 epoch_logs.update({f"epoch_{epochs_elapsed}": summary_obj})
-                cell_list[0].value = epochs_elapsed
-                cell_list[1].value = json.dumps(summary_obj)
-                cell_list[2].value = json.dumps(epoch_logs)
+                
+                cell_list[0].value = train_time_elapsed
+                cell_list[1].value = epochs_elapsed
+                cell_list[2].value = json.dumps(summary_obj)
+                cell_list[3].value = json.dumps(epoch_logs)
 
                 worksheet.update_cells(cell_list)
+            
+            elif train_time_elapsed is not None:
+                worksheet.update_acell(f"C{target_row}", train_time_elapsed)
 
             if epochs_elapsed is not None and test_results is not None:
                 cell_list = worksheet.range(f"G{target_row}:K{target_row}")

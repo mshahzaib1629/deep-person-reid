@@ -22,7 +22,8 @@ def run_reid(
     epochs=2,
     fixed_epochs=None,
     use_early_stopping=False,
-    patience=2,
+    early_stopping_eval_matric='Rank-5',
+    eval_patience=2,
     desired_accuracy=0.30,
     resume_training=False,
 ):
@@ -44,7 +45,8 @@ def run_reid(
         metadata["fixed_epochs"] = fixed_epochs
 
     if use_early_stopping == True:
-        metadata["patience"] = patience
+        metadata["eval_patience"] = eval_patience
+        metadata['early_stopping_eval_matric'] = early_stopping_eval_matric
         metadata["desired_accuracy"] = desired_accuracy
 
     datamanager = torchreid.data.ImageDataManager(
@@ -107,7 +109,8 @@ def run_reid(
             fixbase_epoch=fixed_epochs,
             open_layers="classifier",
             use_early_stopping=use_early_stopping,
-            patience=patience,
+            eval_patience=eval_patience,
+            early_stopping_eval_matric=early_stopping_eval_matric,
             desired_accuracy=desired_accuracy,
         )
     elif can_update == False and resume_training == False:
@@ -119,7 +122,8 @@ def run_reid(
             print_freq=2,
             test_only=False,
             use_early_stopping=use_early_stopping,
-            patience=patience,
+            eval_patience=eval_patience,
+            early_stopping_eval_matric=early_stopping_eval_matric,
             desired_accuracy=desired_accuracy,
         )
     elif resume_training == True and weight_directory is not None:
@@ -137,7 +141,8 @@ def run_reid(
             print_freq=2,
             test_only=False,
             use_early_stopping=use_early_stopping,
-            patience=patience,
+            eval_patience=eval_patience,
+            early_stopping_eval_matric=early_stopping_eval_matric,
             desired_accuracy=desired_accuracy,
         )
 
