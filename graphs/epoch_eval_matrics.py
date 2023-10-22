@@ -56,12 +56,11 @@ WORKSHEET_NAME = "Finetune without RP"
 TARGET_ROW = 8
 
 worksheet = _get_worksheet()
-# @TODO: After removing last_epoch_summary (E Column) from sheets, update the targeted cell's with -1.
-mAP_logs = worksheet.acell(f'G{TARGET_ROW}')
-rank1_logs = worksheet.acell(f'H{TARGET_ROW}')
-rank5_logs = worksheet.acell(f'I{TARGET_ROW}')
-rank10_logs = worksheet.acell(f'J{TARGET_ROW}')
-rank20_logs = worksheet.acell(f'K{TARGET_ROW}')
+mAP_logs = worksheet.acell(f'F{TARGET_ROW}')
+rank1_logs = worksheet.acell(f'G{TARGET_ROW}')
+rank5_logs = worksheet.acell(f'H{TARGET_ROW}')
+rank10_logs = worksheet.acell(f'I{TARGET_ROW}')
+rank20_logs = worksheet.acell(f'J{TARGET_ROW}')
 
 eval_data = {}
 

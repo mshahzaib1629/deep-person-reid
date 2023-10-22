@@ -66,12 +66,11 @@ START_ROW = 2
 END_ROW = 8
 
 worksheet = _get_worksheet()
-# @TODO: After removing last_epoch_summary (E Column) from sheets, update the targeted cell's with -1.
-mAP_logs = worksheet.col_values(7)[START_ROW - 1 : END_ROW]
-rank1_logs = worksheet.col_values(8)[START_ROW - 1 : END_ROW]
-rank5_logs = worksheet.col_values(9)[START_ROW - 1 : END_ROW]
-rank10_logs = worksheet.col_values(10)[START_ROW - 1 : END_ROW]
-rank20_logs = worksheet.col_values(11)[START_ROW - 1 : END_ROW]
+mAP_logs = worksheet.col_values(6)[START_ROW - 1 : END_ROW]
+rank1_logs = worksheet.col_values(7)[START_ROW - 1 : END_ROW]
+rank5_logs = worksheet.col_values(8)[START_ROW - 1 : END_ROW]
+rank10_logs = worksheet.col_values(9)[START_ROW - 1 : END_ROW]
+rank20_logs = worksheet.col_values(10)[START_ROW - 1 : END_ROW]
 
 eval_data = {"mAP": {}, "Rank-1": {}, "Rank-5": {}, "Rank-10": {}, "Rank-20": {}}
 

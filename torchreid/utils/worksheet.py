@@ -90,12 +90,12 @@ def update_worksheet(
                 worksheet.update_acell(f"D{target_row}", 0)
 
             if train_time_elapsed is not None and epochs_elapsed is not None and last_epoch_summary is not None:
-                cell_list = worksheet.range(f"C{target_row}:F{target_row}")
+                cell_list = worksheet.range(f"C{target_row}:E{target_row}")
                 summary_obj = {
                     "loss": f"{last_epoch_summary['loss']:.4f}",
                     "acc": f"{last_epoch_summary['acc']:.4f}",
                 }
-                worksheet_epoch_logs = worksheet.acell(f"F{target_row}")
+                worksheet_epoch_logs = worksheet.acell(f"E{target_row}")
                 if isinstance(worksheet_epoch_logs.value, str):
                     epoch_logs = json.loads(worksheet_epoch_logs.value)
                 else:
@@ -105,8 +105,7 @@ def update_worksheet(
                 
                 cell_list[0].value = train_time_elapsed
                 cell_list[1].value = epochs_elapsed
-                cell_list[2].value = json.dumps(summary_obj)
-                cell_list[3].value = json.dumps(epoch_logs)
+                cell_list[2].value = json.dumps(epoch_logs)
 
                 worksheet.update_cells(cell_list)
             
@@ -114,13 +113,13 @@ def update_worksheet(
                 worksheet.update_acell(f"C{target_row}", train_time_elapsed)
 
             if epochs_elapsed is not None and test_results is not None:
-                cell_list = worksheet.range(f"G{target_row}:K{target_row}")
+                cell_list = worksheet.range(f"F{target_row}:J{target_row}")
 
-                worksheet_mAP_logs = worksheet.acell(f"G{target_row}")
-                worksheet_rank1_logs = worksheet.acell(f"H{target_row}")
-                worksheet_rank5_logs = worksheet.acell(f"I{target_row}")
-                worksheet_rank10_logs = worksheet.acell(f"J{target_row}")
-                worksheet_rank20_logs = worksheet.acell(f"K{target_row}")
+                worksheet_mAP_logs = worksheet.acell(f"F{target_row}")
+                worksheet_rank1_logs = worksheet.acell(f"G{target_row}")
+                worksheet_rank5_logs = worksheet.acell(f"H{target_row}")
+                worksheet_rank10_logs = worksheet.acell(f"I{target_row}")
+                worksheet_rank20_logs = worksheet.acell(f"J{target_row}")
 
                 if isinstance(worksheet_mAP_logs.value, str):
                     mAP_logs = json.loads(worksheet_mAP_logs.value)
@@ -158,23 +157,23 @@ def update_worksheet(
                 worksheet.update_cells(cell_list)
 
             if weights_produced is not None:
-                worksheet.update_acell(f"L{target_row}", weights_produced)
+                worksheet.update_acell(f"K{target_row}", weights_produced)
 
             if metadata is not None:
-                sheet_meta = worksheet.acell(f"M{target_row}")
+                sheet_meta = worksheet.acell(f"L{target_row}")
                 if isinstance(sheet_meta.value, str):
                     sheet_meta = json.loads(sheet_meta.value)
                 else:
                     sheet_meta = {}
                 sheet_meta.update(metadata)
-                worksheet.update_acell(f"M{target_row}", json.dumps(sheet_meta))
+                worksheet.update_acell(f"L{target_row}", json.dumps(sheet_meta))
 
             if session_completed == True:
                 session_completed_at = datetime.datetime.fromtimestamp(time.time())
                 session_completed_at = session_completed_at.strftime(
                     "%Y-%m-%d %H:%M:%S"
                 )
-                worksheet.update_acell(f"N{target_row}", session_completed_at)
+                worksheet.update_acell(f"M{target_row}", session_completed_at)
 
                 os.remove(worksheet_connector_path)
 

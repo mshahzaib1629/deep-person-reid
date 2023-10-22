@@ -43,7 +43,7 @@ def plot_graph(data):
     fig_loss = make_subplots(
         rows=2,
         cols=1,
-        shared_xaxes=True,
+        shared_xaxes=False,
         subplot_titles=("Loss Over Epochs", "Accuracy Over Epochs"),
     )
 
@@ -75,9 +75,9 @@ def plot_graph(data):
 
     # Update layout for each figure
     fig_loss.update_xaxes(title_text="Epoch", row=2, col=1)
-    fig_loss.update_xaxes(title_text="Epoch", row=1, col=1)
     fig_loss.update_yaxes(title_text="Loss", row=1, col=1)
     fig_loss.update_yaxes(title_text="Accuracy (%)", row=2, col=1)
+    fig_loss.update_layout(title="Training Loss, Accuracy over epochs")
 
     # Display both figures together
     fig_loss.show()
@@ -86,8 +86,7 @@ WORKSHEET_NAME = "Finetune without RP"
 TARGET_ROW = 8
 
 worksheet = _get_worksheet()
-# @TODO: After removing last_epoch_summary (E Column) from sheets, update the targeted cell's F with E.
-epoch_logs = worksheet.acell(f'F{TARGET_ROW}')
+epoch_logs = worksheet.acell(f'E{TARGET_ROW}')
 
 if isinstance(epoch_logs.value, str):
     epoch_logs = json.loads(epoch_logs.value)
