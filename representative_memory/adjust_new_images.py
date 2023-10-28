@@ -101,6 +101,9 @@ class AdjustNewImages:
             data = [img["vector"] for img in image_group]
             # Perform herding selection
             num_selected = math.ceil(self.selection_percent * len(image_group))
+            
+            # @TODO: Apply our own trained model to extract features from images, and update rp memory w.r.t that.
+
             selected_indices = herding_selection(data, num_selected)
 
             # print(f"selected_indices: {g_idx}", selected_indices)
@@ -113,18 +116,7 @@ class AdjustNewImages:
                 label_map[image_name] = image_name[
                     self.label_start_index : self.label_end_index
                 ]
-                # Convert vector to image
-                image_data = np.array(
-                    image_group[selected_index]["vector"]
-                )  # shape = (channels, height, width)
-                image_data = image_data.transpose(
-                    1, 2, 0
-                )  # transposing (channels, height, width) -> (height, width, channels)
-                image_data = (image_data * 255).astype(
-                    np.uint8
-                )  # Convert to uint8 data type
-                image = Image.fromarray(image_data)
-
+                image = Image.open(image_group[selected_index]["path"])
                 # Save image with the corresponding name
                 image_path = os.path.join(
                     self.representative_memory_directory, image_name

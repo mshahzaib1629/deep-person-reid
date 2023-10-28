@@ -24,11 +24,19 @@ def extract_images_from_loader(train_loader):
     images = []
     for b_index, batch in enumerate(train_loader):
         for i_index, vector in enumerate(batch["img"]):
+            img = Image.open(batch["impath"][i_index])
+            img = img.resize((128, 256))
+            img_array = np.array(img)
+            # Ensure the image has 3 channels (e.g., RGB). If not, convert it.
+            if len(img_array.shape) == 2:
+                # Convert grayscale to RGB
+                img_array = np.stack((img_array,) * 3, axis=-1)
+
             images.append(
                 {
                     "name": batch["impath"][i_index].split("/")[-1],
                     "path": batch["impath"][i_index],
-                    "vector": vector.numpy(),
+                    "vector": img_array,
                 }
             )
     return images
