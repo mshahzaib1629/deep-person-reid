@@ -82,8 +82,8 @@ def plot_graph(data):
     # Display both figures together
     fig_loss.show()
 
-WORKSHEET_NAME = "Finetune without RP"
-TARGET_ROW = 8
+WORKSHEET_NAME = "Finetune with RP"
+TARGET_ROW = 7
 
 worksheet = _get_worksheet()
 epoch_logs = worksheet.acell(f'E{TARGET_ROW}')

@@ -52,8 +52,8 @@ def plot_graph(data):
     fig.update_layout(title="Evaluation Metrics over Epochs", xaxis_title="Epochs", yaxis_title="Percentage %")
     fig.show()
 
-WORKSHEET_NAME = "Finetune without RP"
-TARGET_ROW = 8
+WORKSHEET_NAME = "Finetune with RP"
+TARGET_ROW = 7
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.acell(f'F{TARGET_ROW}')

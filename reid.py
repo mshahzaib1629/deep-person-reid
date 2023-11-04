@@ -21,6 +21,7 @@ def run_reid(
     eval_freq=10,
     epochs=2,
     fixed_epochs=None,
+    open_layers=None,
     use_early_stopping=False,
     early_stopping_eval_matric='Rank-5',
     eval_patience=2,
@@ -43,6 +44,7 @@ def run_reid(
             fixed_epochs = epochs
         metadata["weights_used"] = weight_directory
         metadata["fixed_epochs"] = fixed_epochs
+        metadata['open_layers'] = open_layers
 
     if use_early_stopping == True:
         metadata["eval_patience"] = eval_patience
@@ -107,7 +109,7 @@ def run_reid(
             print_freq=2,
             test_only=False,
             fixbase_epoch=fixed_epochs,
-            open_layers="classifier",
+            open_layers=open_layers,
             use_early_stopping=use_early_stopping,
             eval_patience=eval_patience,
             early_stopping_eval_matric=early_stopping_eval_matric,
@@ -137,7 +139,7 @@ def run_reid(
             start_epoch=start_epoch,
             eval_freq=eval_freq,
             fixbase_epoch=fixed_epochs,
-            open_layers="classifier",
+            open_layers=open_layers,
             print_freq=2,
             test_only=False,
             use_early_stopping=use_early_stopping,

@@ -47,7 +47,7 @@ def fresh_train_with_rp(comments="Fresh training with RP"):
         use_early_stopping=True,
         epochs=500,
         eval_freq=10,
-        eval_patience=2,
+        eval_patience=1,
         early_stopping_eval_matric='Rank-5',
         desired_accuracy=0.70,
         label_start_index=source_dataset_label_start_index,
@@ -65,7 +65,7 @@ def finetune_without_rp(comments="Finetuining without RP"):
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
-    weight_directory = "log/resnet50/model/model.pth.tar-10"
+    weight_directory = "log/resnet50/model/fresh-model.pth.tar-50"
     rp_memory_directory = None
 
     print("\n=> Started training with finetuning without representative memory\n")
@@ -78,11 +78,12 @@ def finetune_without_rp(comments="Finetuining without RP"):
         target_datasets,
         weight_directory,
         rp_memory_directory,
-        fixed_epochs=5,
+        fixed_epochs=20,
+        open_layers=["layer4", "classifier"],
         use_early_stopping=True,
         epochs=500,
         eval_freq=10,
-        eval_patience=2,
+        eval_patience=1,
         early_stopping_eval_matric='Rank-5',
         desired_accuracy=0.70,
         label_start_index=source_dataset_label_start_index,
@@ -101,7 +102,7 @@ def finetune_with_rp(comments="Finetuning with RP"):
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
-    weight_directory = "log/resnet50/model/model.pth.tar-5"
+    weight_directory = "log/resnet50/model/finetune-rp-r6-model.pth.tar-10"
     rp_memory_directory = RP_MEMORY_DIR
 
     print("\n=> Started training with finetuning and representative memory\n")
@@ -115,16 +116,19 @@ def finetune_with_rp(comments="Finetuning with RP"):
         weight_directory,
         rp_memory_directory,
         use_early_stopping=True,
+        fixed_epochs=30,
+        open_layers=["layer4", "classifier"],
         epochs=500,
-        eval_freq=10,
-        eval_patience=2,
+        eval_freq=5,
+        eval_patience=1,
         early_stopping_eval_matric='Rank-5',
-        desired_accuracy=0.70,
+        desired_accuracy=0.30,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
+        resume_training=False
     )
 
 
 if __name__ == "__main__":
-    COMMENTS = "Adding eval based early stopping"
-    finetune_without_rp(comments=COMMENTS)
+    COMMENTS = "Testing loading of weights of pre-trained Resnet model"
+    finetune_with_rp(comments=COMMENTS)

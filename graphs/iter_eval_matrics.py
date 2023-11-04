@@ -54,16 +54,16 @@ def plot_graph(data):
         )
 
     fig.update_layout(
-        title="Evaluation Metrics over Epochs",
-        xaxis_title="Epochs",
+        title="Evaluation Metrics over Iterations",
+        xaxis_title="Iterations (rows)",
         yaxis_title="Percentage %",
     )
     fig.show()
 
 
-WORKSHEET_NAME = "Finetune without RP"
-START_ROW = 2
-END_ROW = 8
+WORKSHEET_NAME = "Finetune with RP"
+START_ROW = 3
+END_ROW = 7
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.col_values(6)[START_ROW - 1 : END_ROW]
