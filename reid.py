@@ -11,6 +11,7 @@ from torchreid.utils.worksheet import update_worksheet
 def run_reid(
     comments,
     worksheet_name,
+    model_name,
     source_dataset_name,
     source_datasets,
     target_datasets,
@@ -23,7 +24,7 @@ def run_reid(
     fixed_epochs=None,
     open_layers=None,
     use_early_stopping=False,
-    early_stopping_eval_matric='Rank-5',
+    early_stopping_eval_matric="Rank-5",
     eval_patience=2,
     desired_accuracy=0.30,
     resume_training=False,
@@ -32,6 +33,7 @@ def run_reid(
 
     metadata = {
         "training_type": "updation" if can_update == True else "fresh",
+        "model_used": model_name,
         "source_dataset": source_dataset_name,
         "target_datasets": target_datasets,
         "max_epochs": epochs,
@@ -44,11 +46,11 @@ def run_reid(
             fixed_epochs = epochs
         metadata["weights_used"] = weight_directory
         metadata["fixed_epochs"] = fixed_epochs
-        metadata['open_layers'] = open_layers
+        metadata["open_layers"] = open_layers
 
     if use_early_stopping == True:
         metadata["eval_patience"] = eval_patience
-        metadata['early_stopping_eval_matric'] = early_stopping_eval_matric
+        metadata["early_stopping_eval_matric"] = early_stopping_eval_matric
         metadata["desired_accuracy"] = desired_accuracy
 
     datamanager = torchreid.data.ImageDataManager(
@@ -83,7 +85,7 @@ def run_reid(
         )
 
     model = torchreid.models.build_model(
-        name="resnet50",
+        name=model_name,
         num_classes=datamanager.num_train_pids,
         loss="softmax",
         pretrained=True,
@@ -103,7 +105,7 @@ def run_reid(
         torchreid.utils.load_pretrained_weights(model, weight_directory)
         print("=> Updating Pre-trained Model")
         engine.run(
-            save_dir="log/resnet50",
+            save_dir=f"log/{model_name}",
             max_epoch=epochs,
             eval_freq=eval_freq,
             print_freq=2,
@@ -118,7 +120,7 @@ def run_reid(
     elif can_update == False and resume_training == False:
         print("=> Training A New Model")
         engine.run(
-            save_dir="log/resnet50",
+            save_dir=f"log/{model_name}",
             max_epoch=epochs,
             eval_freq=eval_freq,
             print_freq=2,
@@ -134,7 +136,7 @@ def run_reid(
             weight_directory, model, optimizer
         )
         engine.run(
-            save_dir="log/resnet50",
+            save_dir=f"log/{model_name}",
             max_epoch=epochs,
             start_epoch=start_epoch,
             eval_freq=eval_freq,

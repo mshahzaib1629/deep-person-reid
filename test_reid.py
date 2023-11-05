@@ -26,6 +26,8 @@ def fresh_train_with_rp(comments="Fresh training with RP"):
 
     worksheet_name = "Fresh with RP"
 
+    model_name = "resnet18"
+
     source_datasets = ["chunks", "representative_memory"]
     source_dataset_name = "market1501"
     source_dataset_label_start_index = 0
@@ -39,6 +41,7 @@ def fresh_train_with_rp(comments="Fresh training with RP"):
     run_reid(
         comments,
         worksheet_name,
+        model_name,
         source_dataset_name,
         source_datasets,
         target_datasets,
@@ -60,6 +63,8 @@ def finetune_without_rp(comments="Finetuining without RP"):
 
     worksheet_name = "Finetune without RP"
 
+    model_name = "resnet18"
+
     source_datasets = ["chunks"]
     source_dataset_name = "market1501"
     source_dataset_label_start_index = 0
@@ -73,6 +78,7 @@ def finetune_without_rp(comments="Finetuining without RP"):
     run_reid(
         comments,
         worksheet_name,
+        model_name,
         source_dataset_name,
         source_datasets,
         target_datasets,
@@ -97,12 +103,14 @@ def finetune_with_rp(comments="Finetuning with RP"):
 
     worksheet_name = "Finetune with RP"
 
-    source_datasets = ["chunks", "representative_memory"]
+    model_name = "resnet18"
+
+    source_datasets = ["chunks"]
     source_dataset_name = "market1501"
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
-    weight_directory = "log/resnet50/model/finetune-rp-r6-model.pth.tar-10"
+    weight_directory = None
     rp_memory_directory = RP_MEMORY_DIR
 
     print("\n=> Started training with finetuning and representative memory\n")
@@ -110,19 +118,20 @@ def finetune_with_rp(comments="Finetuning with RP"):
     run_reid(
         comments,
         worksheet_name,
+        model_name,
         source_dataset_name,
         source_datasets,
         target_datasets,
         weight_directory,
         rp_memory_directory,
         use_early_stopping=True,
-        fixed_epochs=30,
+        fixed_epochs=10,
         open_layers=["layer4", "classifier"],
         epochs=500,
         eval_freq=5,
         eval_patience=1,
         early_stopping_eval_matric='Rank-5',
-        desired_accuracy=0.30,
+        desired_accuracy=0.60,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
         resume_training=False
@@ -130,5 +139,5 @@ def finetune_with_rp(comments="Finetuning with RP"):
 
 
 if __name__ == "__main__":
-    COMMENTS = "Testing loading of weights of pre-trained Resnet model"
+    COMMENTS = "Fresh Training ResNet18 with train/c11-12 chunk that contain 5106 images of 300 identities. For query and gallery, query/c11 & gallery/c11 are used respectively."
     finetune_with_rp(comments=COMMENTS)
