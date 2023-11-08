@@ -31,6 +31,14 @@ def _get_worksheet():
     except Exception as e:
         print("exception: ", e)
 
+def _save_graph(fig): 
+    # Save the figure as an HTML file and open in browser
+    directory = f"./training_results/{WORKSHEET_NAME}"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    file_path = os.path.join(directory, f'r{START_ROW}-r{END_ROW}-iter-eval.html')
+    fig.write_html(file_path, auto_open=True)
+
 
 def plot_graph(data):
     # Function to convert percentage string to float
@@ -53,17 +61,18 @@ def plot_graph(data):
             )
         )
 
+    fig.update_traces(hoverlabel=dict(font_color='white'))
     fig.update_layout(
         title="Evaluation Metrics over Iterations",
         xaxis_title="Iterations (rows)",
         yaxis_title="Percentage %",
     )
-    fig.show()
+    _save_graph(fig)
 
 
-WORKSHEET_NAME = "Finetune with RP"
-START_ROW = 3
-END_ROW = 7
+WORKSHEET_NAME = "Fresh with RP"
+START_ROW = 2
+END_ROW = 15
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.col_values(6)[START_ROW - 1 : END_ROW]

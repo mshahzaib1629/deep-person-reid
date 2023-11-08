@@ -29,6 +29,14 @@ def _get_worksheet():
     except Exception as e:
         print('exception: ', e)
 
+def _save_graph(fig): 
+    # Save the figure as an HTML file and open in browser
+    directory = f"./training_results/{WORKSHEET_NAME}"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    file_path = os.path.join(directory, f'r{TARGET_ROW}-epoch-loss.html')
+    fig.write_html(file_path, auto_open=True)
+
 def plot_graph(data):
         # Extract loss and accuracy values
     epochs = [int(epoch.split("_")[1]) for epoch in data.keys()]
@@ -40,7 +48,7 @@ def plot_graph(data):
     acc_color = "green"
 
     # Create separate figures
-    fig_loss = make_subplots(
+    fig = make_subplots(
         rows=2,
         cols=1,
         shared_xaxes=False,
@@ -48,7 +56,7 @@ def plot_graph(data):
     )
 
     # Add Loss plot
-    fig_loss.add_trace(
+    fig.add_trace(
         go.Scatter(
             x=epochs,
             y=loss_values,
@@ -61,7 +69,7 @@ def plot_graph(data):
     )
 
     # Add Accuracy plot
-    fig_loss.add_trace(
+    fig.add_trace(
         go.Scatter(
             x=epochs,
             y=acc_values,
@@ -72,18 +80,17 @@ def plot_graph(data):
         row=2,
         col=1,
     )
-
+    fig.update_traces(hoverlabel=dict(font_color='white'))
     # Update layout for each figure
-    fig_loss.update_xaxes(title_text="Epoch", row=2, col=1)
-    fig_loss.update_yaxes(title_text="Loss", row=1, col=1)
-    fig_loss.update_yaxes(title_text="Accuracy (%)", row=2, col=1)
-    fig_loss.update_layout(title="Training Loss, Accuracy over epochs")
+    fig.update_xaxes(title_text="Epoch", row=2, col=1)
+    fig.update_yaxes(title_text="Loss", row=1, col=1)
+    fig.update_yaxes(title_text="Accuracy (%)", row=2, col=1)
+    fig.update_layout(title="Training Loss, Accuracy over epochs")
 
-    # Display both figures together
-    fig_loss.show()
+    _save_graph(fig)
 
 WORKSHEET_NAME = "Finetune with RP"
-TARGET_ROW = 7
+TARGET_ROW = 15
 
 worksheet = _get_worksheet()
 epoch_logs = worksheet.acell(f'E{TARGET_ROW}')

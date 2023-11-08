@@ -30,6 +30,14 @@ def _get_worksheet():
     except Exception as e:
         print('exception: ', e)
 
+def _save_graph(fig): 
+    # Save the figure as an HTML file and open in browser
+    directory = f"./training_results/{WORKSHEET_NAME}"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    file_path = os.path.join(directory, f'r{TARGET_ROW}-epoch-eval.html')
+    fig.write_html(file_path, auto_open=True)
+
 def plot_graph(data): 
     # Function to convert percentage string to float
     def convert_percentage_to_float(percentage_str):
@@ -49,11 +57,30 @@ def plot_graph(data):
             name=metric
         ))
 
-    fig.update_layout(title="Evaluation Metrics over Epochs", xaxis_title="Epochs", yaxis_title="Percentage %")
-    fig.show()
+    fig.update_traces(hoverlabel=dict(font_color='white'))
+    fig.update_layout(title="Evaluation Metrics over Epochs",
+    annotations=[
+        dict(
+            text="Your additional information here",  # Replace with your text
+            showarrow=False,
+            xref="paper",
+            yref="paper",
+            x=0.5,  # This centers the text
+            y=1.15,  # This will position the annotation just above the plot area
+            xanchor="center",
+            yanchor="bottom",  # 'bottom' aligns the bottom of the text with the specified y value
+            font=dict(
+                size=12,
+                color="black"  # You can change the color if needed
+            )
+        )
+    ],
+    xaxis_title="Epochs",
+    yaxis_title="Percentage %",)
+    _save_graph(fig)
 
 WORKSHEET_NAME = "Finetune with RP"
-TARGET_ROW = 7
+TARGET_ROW = 14
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.acell(f'F{TARGET_ROW}')

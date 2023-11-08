@@ -137,6 +137,7 @@ dmypy.json
 reid-data/
 log/
 saved-models/
+training_results/
 model-zoo/
 debug*
 excel-service-key.json
