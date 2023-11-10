@@ -51,7 +51,7 @@ def fresh_train_with_rp(comments="Fresh training with RP"):
         epochs=500,
         eval_freq=10,
         eval_patience=1,
-        early_stopping_eval_matric='Rank-5',
+        early_stopping_eval_matric="Rank-5",
         desired_accuracy=0.70,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
@@ -90,11 +90,11 @@ def finetune_without_rp(comments="Finetuining without RP"):
         epochs=500,
         eval_freq=10,
         eval_patience=1,
-        early_stopping_eval_matric='Rank-5',
+        early_stopping_eval_matric="Rank-5",
         desired_accuracy=0.70,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
-        resume_training=False
+        resume_training=False,
     )
 
 
@@ -105,12 +105,12 @@ def finetune_with_rp(comments="Finetuning with RP"):
 
     model_name = "resnet18"
 
-    source_datasets = ["chunks"]
+    source_datasets = ["chunks", "representative_memory"]
     source_dataset_name = "market1501"
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
-    weight_directory = None
+    weight_directory =  None
     rp_memory_directory = RP_MEMORY_DIR
 
     print("\n=> Started training with finetuning and representative memory\n")
@@ -125,19 +125,19 @@ def finetune_with_rp(comments="Finetuning with RP"):
         weight_directory,
         rp_memory_directory,
         use_early_stopping=True,
-        fixed_epochs=10,
+        fixed_epochs=20,
         open_layers=["layer4", "classifier"],
-        epochs=500,
+        epochs=60,
         eval_freq=5,
         eval_patience=1,
-        early_stopping_eval_matric='Rank-5',
+        early_stopping_eval_matric="Rank-5",
         desired_accuracy=0.60,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
-        resume_training=False
+        resume_training=False,
     )
 
 
 if __name__ == "__main__":
-    COMMENTS = "Fresh Training ResNet18 with train/c11-12 chunk that contain 5106 images of 300 identities. For query and gallery, query/c11 & gallery/c11 are used respectively."
+    COMMENTS = "Finetuning ResNet50 with train/c11-12 chunk while train/c11-12 in representative memory. For query and gallery, query/c11 & gallery/c11 are used respectively. Using 0.4 dropout in this test."
     finetune_with_rp(comments=COMMENTS)

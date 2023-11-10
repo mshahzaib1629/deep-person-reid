@@ -70,7 +70,7 @@ def plot_graph(data):
     _save_graph(fig)
 
 
-WORKSHEET_NAME = "Fresh with RP"
+WORKSHEET_NAME = "Finetune with RP"
 START_ROW = 2
 END_ROW = 15
 

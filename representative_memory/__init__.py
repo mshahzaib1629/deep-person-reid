@@ -52,8 +52,7 @@ def seperate_new_and_rp_images(train_loader, representative_memory_directory):
         if (
             isinstance(representative_memory_directory, str)
             and i["path"].find(representative_memory_directory) > -1
-            
-        ):   
+        ):
             rp_images.append(i)
         else:
             new_images.append(i)
@@ -75,6 +74,8 @@ def update_representative_memory(
     """
     if not os.path.exists(representative_memory_main_directory):
         os.makedirs(representative_memory_main_directory)
+    if not os.path.exists(os.path.join(representative_memory_main_directory, "memory")):
+        os.makedirs(os.path.join(representative_memory_main_directory, "memory"))
 
     new_images, rp_images = seperate_new_and_rp_images(
         train_loader, representative_memory_main_directory

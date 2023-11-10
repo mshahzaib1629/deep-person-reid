@@ -59,6 +59,7 @@ def plot_graph(data):
 
     fig.update_traces(hoverlabel=dict(font_color='white'))
     fig.update_layout(title="Evaluation Metrics over Epochs",
+    # @TODO: annotations not working
     annotations=[
         dict(
             text="Your additional information here",  # Replace with your text
@@ -79,8 +80,8 @@ def plot_graph(data):
     yaxis_title="Percentage %",)
     _save_graph(fig)
 
-WORKSHEET_NAME = "Finetune with RP"
-TARGET_ROW = 14
+WORKSHEET_NAME = "Finetune with RP - ResNet18 - Triplet Loss"
+TARGET_ROW = 5
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.acell(f'F{TARGET_ROW}')
