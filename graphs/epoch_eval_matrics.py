@@ -80,8 +80,8 @@ def plot_graph(data):
     yaxis_title="Percentage %",)
     _save_graph(fig)
 
-WORKSHEET_NAME = "Finetune with RP - ResNet18 - Triplet Loss"
-TARGET_ROW = 5
+WORKSHEET_NAME = "Finetune with RP - ResNet18"
+TARGET_ROW = 4
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.acell(f'F{TARGET_ROW}')

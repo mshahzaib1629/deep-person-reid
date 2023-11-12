@@ -168,13 +168,12 @@ def update_worksheet(
                 sheet_meta.update(metadata)
                 worksheet.update_acell(f"L{target_row}", json.dumps(sheet_meta))
 
+            # set updated time
+            updated_at = datetime.datetime.fromtimestamp(time.time())
+            updated_at = updated_at.strftime("%Y-%m-%d %H:%M:%S")
+            worksheet.update_acell(f"M{target_row}", updated_at)
+            
             if session_completed == True:
-                session_completed_at = datetime.datetime.fromtimestamp(time.time())
-                session_completed_at = session_completed_at.strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
-                worksheet.update_acell(f"M{target_row}", session_completed_at)
-
                 os.remove(worksheet_connector_path)
 
         else:

@@ -89,8 +89,8 @@ def plot_graph(data):
 
     _save_graph(fig)
 
-WORKSHEET_NAME = "Finetune with RP"
-TARGET_ROW = 15
+WORKSHEET_NAME = "Finetune with RP - ResNet18"
+TARGET_ROW = 4
 
 worksheet = _get_worksheet()
 epoch_logs = worksheet.acell(f'E{TARGET_ROW}')

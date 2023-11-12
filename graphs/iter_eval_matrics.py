@@ -70,9 +70,9 @@ def plot_graph(data):
     _save_graph(fig)
 
 
-WORKSHEET_NAME = "Finetune with RP"
+WORKSHEET_NAME = "Finetune with RP - ResNet18"
 START_ROW = 2
-END_ROW = 15
+END_ROW = 4
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.col_values(6)[START_ROW - 1 : END_ROW]

@@ -101,7 +101,7 @@ def finetune_without_rp(comments="Finetuining without RP"):
 def finetune_with_rp(comments="Finetuning with RP"):
     """Train with finetuning and representative memory"""
 
-    worksheet_name = "Finetune with RP"
+    worksheet_name = "Finetune with RP - ResNet18"
 
     model_name = "resnet18"
 
@@ -109,8 +109,8 @@ def finetune_with_rp(comments="Finetuning with RP"):
     source_dataset_name = "market1501"
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
-    target_datasets = "chunks"
-    weight_directory =  None
+    target_datasets = ["market1501"]
+    weight_directory =  "log/resnet18/model/model.pth.tar-60"
     rp_memory_directory = RP_MEMORY_DIR
 
     print("\n=> Started training with finetuning and representative memory\n")
@@ -125,13 +125,13 @@ def finetune_with_rp(comments="Finetuning with RP"):
         weight_directory,
         rp_memory_directory,
         use_early_stopping=True,
-        fixed_epochs=20,
+        fixed_epochs=25,
         open_layers=["layer4", "classifier"],
-        epochs=60,
+        epochs=100,
         eval_freq=5,
         eval_patience=1,
         early_stopping_eval_matric="Rank-5",
-        desired_accuracy=0.60,
+        desired_accuracy=0.90,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
         resume_training=False,
@@ -139,5 +139,5 @@ def finetune_with_rp(comments="Finetuning with RP"):
 
 
 if __name__ == "__main__":
-    COMMENTS = "Finetuning ResNet50 with train/c11-12 chunk while train/c11-12 in representative memory. For query and gallery, query/c11 & gallery/c11 are used respectively. Using 0.4 dropout in this test."
+    COMMENTS = "Finetuning ResNet18 with train/c13 chunk while train/c11-12 in representative memory. For evaluation, market1501 query and gallery images are used.  Model freezed upto 25 epochs besides layer4 & classifier. 0.4 dropout prob applied."
     finetune_with_rp(comments=COMMENTS)
