@@ -59,20 +59,19 @@ def plot_graph(data):
 
     fig.update_traces(hoverlabel=dict(font_color='white'))
     fig.update_layout(title="Evaluation Metrics over Epochs",
-    # @TODO: annotations not working
     annotations=[
         dict(
-            text="Your additional information here",  # Replace with your text
+            text=f"{WORKSHEET_NAME} - R{TARGET_ROW}",
             showarrow=False,
             xref="paper",
             yref="paper",
-            x=0.5,  # This centers the text
-            y=1.15,  # This will position the annotation just above the plot area
-            xanchor="center",
-            yanchor="bottom",  # 'bottom' aligns the bottom of the text with the specified y value
+            x=0.006,  
+            y=1.05,  
+            xanchor="left",
+            yanchor="top",  
             font=dict(
-                size=12,
-                color="black"  # You can change the color if needed
+                size=14,
+                color="black"  
             )
         )
     ],
@@ -81,7 +80,7 @@ def plot_graph(data):
     _save_graph(fig)
 
 WORKSHEET_NAME = "Finetune with RP - ResNet18"
-TARGET_ROW = 4
+TARGET_ROW = 9
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.acell(f'F{TARGET_ROW}')

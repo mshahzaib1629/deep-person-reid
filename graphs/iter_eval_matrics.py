@@ -66,13 +66,29 @@ def plot_graph(data):
         title="Evaluation Metrics over Iterations",
         xaxis_title="Iterations (rows)",
         yaxis_title="Percentage %",
+        annotations=[
+        dict(
+            text=f"{WORKSHEET_NAME} - R{START_ROW} to R{END_ROW}",
+            showarrow=False,
+            xref="paper",
+            yref="paper",
+            x=0.006,
+            y=1.05,  
+            xanchor="left",
+            yanchor="top",  
+            font=dict(
+                size=14,
+                color="black"
+            )
+        )
+    ],
     )
     _save_graph(fig)
 
 
 WORKSHEET_NAME = "Finetune with RP - ResNet18"
-START_ROW = 2
-END_ROW = 4
+START_ROW = 7
+END_ROW = 9
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.col_values(6)[START_ROW - 1 : END_ROW]

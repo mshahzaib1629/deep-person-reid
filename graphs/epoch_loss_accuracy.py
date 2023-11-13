@@ -85,12 +85,29 @@ def plot_graph(data):
     fig.update_xaxes(title_text="Epoch", row=2, col=1)
     fig.update_yaxes(title_text="Loss", row=1, col=1)
     fig.update_yaxes(title_text="Accuracy (%)", row=2, col=1)
-    fig.update_layout(title="Training Loss, Accuracy over epochs")
+    fig.update_layout(title="Training Loss, Accuracy over epochs",
+    annotations=[
+        dict(
+            text=f"{WORKSHEET_NAME} - R{TARGET_ROW}",
+            showarrow=False,
+            xref="paper",
+            yref="paper",
+            x=0.006,  
+            y=1.05, 
+            xanchor="left",
+            yanchor="top",  
+            font=dict(
+                size=14,
+                color="black"
+            )
+        )
+    ],
+    )
 
     _save_graph(fig)
 
 WORKSHEET_NAME = "Finetune with RP - ResNet18"
-TARGET_ROW = 4
+TARGET_ROW = 9
 
 worksheet = _get_worksheet()
 epoch_logs = worksheet.acell(f'E{TARGET_ROW}')
