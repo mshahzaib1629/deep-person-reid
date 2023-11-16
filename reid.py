@@ -42,9 +42,12 @@ def run_reid(
     }
 
     if can_update == True:
-        if fixed_epochs is None:
-            fixed_epochs = epochs
         metadata["weights_used"] = weight_directory
+        
+    if fixed_epochs is None:
+        fixed_epochs = epochs
+
+    if fixed_epochs != epochs:
         metadata["fixed_epochs"] = fixed_epochs
         metadata["open_layers"] = open_layers
 
@@ -125,6 +128,8 @@ def run_reid(
             eval_freq=eval_freq,
             print_freq=2,
             test_only=False,
+            fixbase_epoch=fixed_epochs,
+            open_layers=open_layers,
             use_early_stopping=use_early_stopping,
             eval_patience=eval_patience,
             early_stopping_eval_matric=early_stopping_eval_matric,
