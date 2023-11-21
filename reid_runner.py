@@ -18,8 +18,7 @@ torchreid.data.register_image_dataset("chunks", ChunkLoader)
 # @TODO: Add logs tracking locally and automate for Google Worksheet
 # @TODO: Run tests on larger epochs & datasets
 
-RP_MEMORY_DIR = "reid-data/representative-memory"
-
+RP_MEMORY_PATH = os.path.join("reid-data", "representative-memory")
 
 def fresh_train_with_rp(comments="Fresh training with RP"):
     """Train with representative memory without finetuning"""
@@ -34,7 +33,7 @@ def fresh_train_with_rp(comments="Fresh training with RP"):
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
     weight_directory = None
-    rp_memory_directory = RP_MEMORY_DIR
+    rp_memory_directory = RP_MEMORY_PATH
 
     print("\n=> Started training with representative memory without finetuning\n")
 
@@ -70,7 +69,7 @@ def finetune_without_rp(comments="Finetuining without RP"):
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = "chunks"
-    weight_directory = "log/resnet50/model/fresh-model.pth.tar-50"
+    weight_directory =  os.path.join("log", "resnet18", "model", "finetune-rp-res18-r22-model.pth.tar-40")
     rp_memory_directory = None
 
     print("\n=> Started training with finetuning without representative memory\n")
@@ -110,8 +109,9 @@ def finetune_with_rp(comments="Finetuning with RP"):
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = ["market1501"]
-    weight_directory =  "log/resnet18/model/model.pth.tar-60"
-    rp_memory_directory = RP_MEMORY_DIR
+    weight_directory =  os.path.join("log", "resnet18", "model", "finetune-rp-res18-r22-model.pth.tar-40")
+    rp_memory_directory = RP_MEMORY_PATH
+
 
     print("\n=> Started training with finetuning and representative memory\n")
 
@@ -125,19 +125,19 @@ def finetune_with_rp(comments="Finetuning with RP"):
         weight_directory,
         rp_memory_directory,
         use_early_stopping=True,
-        fixed_epochs=25,
-        open_layers=["layer4", "classifier"],
-        epochs=100,
+        fixed_epochs=None,
+        open_layers=None,
+        epochs=70,
         eval_freq=5,
         eval_patience=1,
         early_stopping_eval_matric="Rank-5",
         desired_accuracy=0.90,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
-        resume_training=False,
+        resume_training=True,
     )
 
 
 if __name__ == "__main__":
-    COMMENTS = "Finetuning ResNet18 with train/c13 chunk while train/c11-12 in representative memory. For evaluation, market1501 query and gallery images are used.  Model freezed upto 25 epochs besides layer4 & classifier. 0.4 dropout prob applied."
+    COMMENTS = "Finetuning ResNet18 on train/c11-12 chunk. For For evaluation, market1501 query and gallery images are used. 0.4 dropout prob applied."
     finetune_with_rp(comments=COMMENTS)
