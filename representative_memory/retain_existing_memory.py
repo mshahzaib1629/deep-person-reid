@@ -52,8 +52,16 @@ class RetainExistingMemory:
 
         for image_name in image_filenames:
             path = os.path.join(memory_directory, image_name)
-            image = np.array(Image.open(path))
-            images.append({"name": image_name, "path": path, "vector": image})
+            image = Image.open(path)
+
+            img = image.resize((128, 256))
+            img_array = np.array(img)
+            # Ensure the image has 3 channels (e.g., RGB). If not, convert it.
+            if len(img_array.shape) == 2:
+                # Convert grayscale to RGB
+                img_array = np.stack((img_array,) * 3, axis=-1)
+                
+            images.append({"name": image_name, "path": path, "vector": img_array})
 
         # Group items by their labels
         grouped_data = {}
@@ -157,13 +165,8 @@ class RetainExistingMemory:
                 image_name = image_group[selected_index]["name"]
                 label_map[image_name] = self.get_image_label_from_json(image_name)
 
-                # Convert vector to image
-                image_data = np.array(
-                    image_group[selected_index]["vector"]
-                )  # shape = (height, width, channels)
 
-                image = Image.fromarray(image_data)
-
+                image = Image.open(image_group[selected_index]["path"])
                 # Save image with the corresponding name
                 image_path = os.path.join(
                     self.representative_memory_directory, image_name
