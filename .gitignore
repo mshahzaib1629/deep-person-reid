@@ -142,3 +142,4 @@ model-zoo/
 debug*
 excel-service-key.json
 worksheet_connector.json
+analysis_worksheet_connector.json

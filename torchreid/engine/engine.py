@@ -484,7 +484,7 @@ class Engine(object):
             print('Rank-{:<3}: {:.1%}'.format(r, cmc[r - 1]))
             self.last_eval_score[f'Rank-{r}'] = '{:.3%}'.format(cmc[r - 1])
         
-        update_worksheet(epochs_elapsed= self.epoch+1, test_results=self.last_eval_score)
+        update_worksheet(epochs_elapsed= self.epoch+1, test_results=self.last_eval_score, dataset_analyzed=dataset_name),
 
         if visrank:
             visualize_ranked_results(
