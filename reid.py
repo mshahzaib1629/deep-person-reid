@@ -45,9 +45,10 @@ def run_reid(
         metadata["weights_used"] = weight_directory
         
     if fixed_epochs is None:
-        fixed_epochs = epochs
+        fixed_epochs = 0
+        open_layers = None 
 
-    if fixed_epochs != epochs:
+    if fixed_epochs != 0:
         metadata["fixed_epochs"] = fixed_epochs
         metadata["open_layers"] = open_layers
 
