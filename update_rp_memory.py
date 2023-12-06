@@ -1,3 +1,4 @@
+from helpers import Matric, SelectedDatasets
 import torchreid, os
 from representative_memory import (
     update_representative_memory,
@@ -34,8 +35,8 @@ def update_rp_memory(source_datasets, source_dataset_name, rp_memory_dir, label_
 
 if __name__ == "__main__":
     RP_MEMORY_PATH = os.path.join("reid-data", "representative-memory")
-    update_rp_memory(source_datasets=["chunks", "representative_memory"], 
-                     source_dataset_name="market1501", 
+    update_rp_memory(source_datasets=[SelectedDatasets.Chunks, SelectedDatasets.RP_Memory], 
+                     source_dataset_name=SelectedDatasets.DukeMTMC, 
                      rp_memory_dir=RP_MEMORY_PATH, 
                      label_start_index=0, 
                      label_end_index=3, 

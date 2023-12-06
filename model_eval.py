@@ -3,6 +3,7 @@ import torchreid
 from representative_memory import (
     ChunkLoader,
 )
+from helpers import Matric, SelectedDatasets, AvailableModels
 torchreid.data.register_image_dataset("chunks", ChunkLoader)
 from torchreid.utils.worksheet import update_worksheet
 
@@ -63,15 +64,17 @@ def evaluate_models(models, model_class, datasets, worksheet_name = None):
 
 if __name__ == "__main__":
     models = [
-        "finetune-rp-res18-r22-model.pth.tar-60",
-        "finetune-rp-res18-r24-model.pth.tar-20",
-        "finetune-rp-res18-r22-model.pth.tar-61"
+        "finetune-rp-res50-r5-model.pth.tar-50",
+        "finetune-rp-res50-r6-model.pth.tar-50",
+        "finetune-rp-res50-r7-model.pth.tar-50",
+        "finetune-rp-res50-r8-model.pth.tar-50",
+        "finetune-rp-res50-r10-model.pth.tar-50"
         ]
     
-    model_class = "resnet18"
+    model_class = AvailableModels.ResNet50
     
-    datasets = ['market1501', 'dukemtmcreid']
+    datasets = [SelectedDatasets.Market1501, SelectedDatasets.DukeMTMC]
 
-    WORKSHEET_NAME = "Test [Analysis] Finetune with RP - ResNet18"
-
+    WORKSHEET_NAME = "[Analysis] Finetune with RP - ResNet50"
+    
     evaluate_models(models, model_class, datasets, WORKSHEET_NAME)

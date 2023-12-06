@@ -1,3 +1,7 @@
+import sys, re
+sys.path.append("/home/code/Shahzaib/MS/Thesis/Implementation/deep-person-reid/")
+from helpers import Matric
+
 import json, os, gspread, requests, datetime, time
 from oauth2client.service_account import ServiceAccountCredentials
 import plotly.graph_objects as go
@@ -79,8 +83,8 @@ def plot_graph(data):
     yaxis_title="Percentage %",)
     _save_graph(fig)
 
-WORKSHEET_NAME = "Finetune with RP - ResNet18"
-TARGET_ROW = 9
+WORKSHEET_NAME = "Finetune with RP - ResNet50"
+TARGET_ROW = 7
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.acell(f'F{TARGET_ROW}')
@@ -92,15 +96,15 @@ rank20_logs = worksheet.acell(f'J{TARGET_ROW}')
 eval_data = {}
 
 if isinstance(mAP_logs.value, str):
-    eval_data['mAP'] = json.loads(mAP_logs.value)
+    eval_data[Matric.map] = json.loads(mAP_logs.value)
 if isinstance(rank1_logs.value, str):
-    eval_data['Rank-1'] = json.loads(rank1_logs.value)
+    eval_data[Matric.rank1] = json.loads(rank1_logs.value)
 if isinstance(rank5_logs.value, str):
-    eval_data['Rank-5'] = json.loads(rank5_logs.value)
+    eval_data[Matric.rank5] = json.loads(rank5_logs.value)
 if isinstance(rank10_logs.value, str):
-    eval_data['Rank-10'] = json.loads(rank10_logs.value)
+    eval_data[Matric.rank10] = json.loads(rank10_logs.value)
 if isinstance(rank20_logs.value, str):
-    eval_data['Rank-20'] = json.loads(rank20_logs.value)
+    eval_data[Matric.rank20] = json.loads(rank20_logs.value)
 
 if len(eval_data.keys()) > 0:
     plot_graph(eval_data)

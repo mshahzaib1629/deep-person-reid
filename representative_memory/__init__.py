@@ -31,11 +31,14 @@ def extract_images_from_loader(train_loader):
             if len(img_array.shape) == 2:
                 # Convert grayscale to RGB
                 img_array = np.stack((img_array,) * 3, axis=-1)
+  
+            address = os.path.normpath(batch["impath"][i_index])
+            image_name = os.path.basename(address)
 
             images.append(
                 {
-                    "name": batch["impath"][i_index].split("/")[-1],
-                    "path": batch["impath"][i_index],
+                    "name": image_name,
+                    "path": address,
                     "vector": img_array,
                 }
             )

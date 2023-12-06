@@ -1,3 +1,5 @@
+import os
+from helpers import Matric, SelectedDatasets, AvailableModels
 import torchreid
 from representative_memory import (
     ChunkLoader,
@@ -36,8 +38,8 @@ def test_reid_model(model_name, weight_directory, target_datasets):
 
 
 if __name__ == "__main__":
-    model_name = "resnet18"
-    weight_directory = "log/resnet18/model/model.pth.tar-60"
-    dataset = ["market1501"]
+    model_name = AvailableModels.ResNet18
+    weight_directory = os.path.join("log", model_name, "model", "model.pth.tar-20")
+    dataset = [ SelectedDatasets.DukeMTMC]
     
     test_reid_model(model_name, weight_directory, dataset)

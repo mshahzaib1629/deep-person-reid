@@ -52,9 +52,9 @@ def chunks_generator(data_path, excluded_images_names=[]):
 
     return json_data
 
-existing_chunks_paths = ["./reid-data/chunks/train/c11-12", "./reid-data/chunks/train/c13", "./reid-data/chunks/train/c14", "./reid-data/chunks/train/c15"]
+existing_chunks_paths = []
 
 excluded_images_names = get_chunk_images_names(existing_chunks_paths)
 print("excluded_images: ", len(excluded_images_names))
-data = chunks_generator("./reid-data/market1501/Market-1501-v15.09.15/bounding_box_train", [excluded_images_names])
+data = chunks_generator("./reid-data/dukemtmc-reid/DukeMTMC-reID/bounding_box_train", [excluded_images_names])
 print('DATA: \n', data)

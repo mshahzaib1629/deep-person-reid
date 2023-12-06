@@ -1,11 +1,14 @@
+import sys
+sys.path.append("/home/code/Shahzaib/MS/Thesis/Implementation/deep-person-reid/")
+from helpers import SelectedDatasets
 from .market1501 import market1501_processor
 from .cuhk03 import cuhk03_processor
 from .dukemtmcreid import dukemtmcreid_processor
 
 processsors = {
-    "market1501": market1501_processor,
-    "cuhk03": cuhk03_processor,
-    "dukemtmcreid": dukemtmcreid_processor,
+    SelectedDatasets.Market1501: market1501_processor,
+    SelectedDatasets.CUHK03: cuhk03_processor,
+    SelectedDatasets.DukeMTMC: dukemtmcreid_processor,
 }
 
 

@@ -7,19 +7,19 @@ from oauth2client.service_account import ServiceAccountCredentials
 from helpers import Matric, SelectedDatasets
 
 # The data dictionary as provided
-data = {
-    "models_trained": ["r12", "r24", "r25"],
-    "market1501": {
-        "mAP": ["39.48%", "44.6%", "38.9%"],
-        "Rank-1": ["66.1%", "68.5%", "63.4%"],
-        "Rank-5": ["83.9%", "84.6%", "81.7%"]
-    },
-    "dukemtmcreid": {
-        "mAP": ["10.9%", "24.1%", "23.3%"],
-        "Rank-1": ["22.2%", "43.9%", "45.01%"],
-        "Rank-5": ["36.7%", "61.1%", "63.8%"]
-    }
-}
+# data = {
+#     "models_trained": ["r12", "r24", "r25"],
+#     "market1501": {
+#         "mAP": ["39.48%", "44.6%", "38.9%"],
+#         "Rank-1": ["66.1%", "68.5%", "63.4%"],
+#         "Rank-5": ["83.9%", "84.6%", "81.7%"]
+#     },
+#     "dukemtmcreid": {
+#         "mAP": ["10.9%", "24.1%", "23.3%"],
+#         "Rank-1": ["22.2%", "43.9%", "45.01%"],
+#         "Rank-5": ["36.7%", "61.1%", "63.8%"]
+#     }
+# }
 
 def _get_worksheet():
     try:
@@ -160,5 +160,5 @@ TARGET_ROWS = [ 3, 4,]
 MATRICES = [ Matric.rank5, Matric.rank1, Matric.map]
 DATASETS = [SelectedDatasets.Market1501, SelectedDatasets.DukeMTMC]
 
-# data = _get_data(TARGET_ROWS, DATASETS, MATRICES)
+data = _get_data(TARGET_ROWS, DATASETS, MATRICES)
 plot_graph(data, TARGET_ROWS, MATRICES, DATASETS)

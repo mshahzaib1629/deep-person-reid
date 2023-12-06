@@ -2,7 +2,7 @@ import os
 import shutil
 from collections import defaultdict
 import json
-
+from enums import SelectedDatasets
 
 def update_labels_txt(dest_folder, copied_labels, total_images_copied):
     labels_path = os.path.join(dest_folder, "labels.txt")
@@ -147,10 +147,10 @@ def copy_files_with_prefix(
 
 if __name__ == "__main__":
     # Example usage:
-    dataset_name = "market1501"
-    source_folder = "./reid-data/market1501/Market-1501-v15.09.15/query"
-    destination_folder = "./reid-data/chunks/gallery/c2"
-    labels = ["0004", "0001", "0006", "0021", "0024"]
+    dataset_name = SelectedDatasets.DukeMTMC
+    source_folder = "./reid-data/dukemtmc-reid/DukeMTMC-reID/bounding_box_train"
+    destination_folder = "./reid-data/chunks/train/test"
+    labels = ["0001"]
 
     copy_files_with_prefix(
         dataset_name,

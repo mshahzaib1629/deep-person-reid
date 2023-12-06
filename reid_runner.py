@@ -1,3 +1,4 @@
+from helpers import SelectedDatasets, Matric, AvailableModels
 from reid import run_reid
 import torchreid
 from representative_memory import (
@@ -25,13 +26,13 @@ def fresh_train_with_rp(comments="Fresh training with RP"):
 
     worksheet_name = "Fresh with RP"
 
-    model_name = "resnet18"
+    model_name = AvailableModels.ResNet18
 
-    source_datasets = ["chunks", "representative_memory"]
-    source_dataset_name = "market1501"
+    source_datasets = [SelectedDatasets.Chunks, SelectedDatasets.RP_Memory]
+    source_dataset_name = SelectedDatasets.Market1501
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
-    target_datasets = "chunks"
+    target_datasets = SelectedDatasets.Market1501
     weight_directory = None
     rp_memory_directory = RP_MEMORY_PATH
 
@@ -62,14 +63,14 @@ def finetune_without_rp(comments="Finetuining without RP"):
 
     worksheet_name = "Finetune without RP"
 
-    model_name = "resnet18"
+    model_name = AvailableModels.ResNet18
 
-    source_datasets = ["chunks"]
-    source_dataset_name = "market1501"
+    source_datasets = [SelectedDatasets.Chunks]
+    source_dataset_name = SelectedDatasets.Market1501
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
-    target_datasets = "chunks"
-    weight_directory =  os.path.join("log", "resnet18", "model", "finetune-rp-res18-r22-model.pth.tar-40")
+    target_datasets = SelectedDatasets.Market1501
+    weight_directory =  os.path.join("log", model_name, "model", "finetune-rp-res18-r22-model.pth.tar-40")
     rp_memory_directory = None
 
     print("\n=> Started training with finetuning without representative memory\n")
@@ -100,16 +101,16 @@ def finetune_without_rp(comments="Finetuining without RP"):
 def finetune_with_rp(comments="Finetuning with RP"):
     """Train with finetuning and representative memory"""
 
-    worksheet_name = "Finetune with RP - ResNet18"
+    worksheet_name = "Finetune with RP - ResNet50"
 
-    model_name = "resnet18"
+    model_name = AvailableModels.ResNet50
 
-    source_datasets = ["chunks", "representative_memory"]
-    source_dataset_name = "market1501"
+    source_datasets = [SelectedDatasets.Chunks, SelectedDatasets.RP_Memory]
+    source_dataset_name = SelectedDatasets.DukeMTMC
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
-    target_datasets = ["market1501"]
-    weight_directory =  os.path.join("log", "resnet18", "model", "finetune-rp-res18-r22-model.pth.tar-40")
+    target_datasets = [SelectedDatasets.DukeMTMC]
+    weight_directory =  os.path.join("log", model_name, "model", "finetune-rp-res50-r10-model.pth.tar-50")
     rp_memory_directory = RP_MEMORY_PATH
 
 
@@ -125,19 +126,19 @@ def finetune_with_rp(comments="Finetuning with RP"):
         weight_directory,
         rp_memory_directory,
         use_early_stopping=True,
-        fixed_epochs=None,
-        open_layers=None,
-        epochs=70,
-        eval_freq=5,
+        fixed_epochs=50,
+        open_layers=["layer4", "classifier"],
+        epochs=50,
+        eval_freq=10,
         eval_patience=1,
-        early_stopping_eval_matric="Rank-5",
+        early_stopping_eval_matric=Matric.rank5,
         desired_accuracy=0.90,
         label_start_index=source_dataset_label_start_index,
         label_end_index=source_dataset_label_end_index,
-        resume_training=True,
+        resume_training=False
     )
 
 
 if __name__ == "__main__":
-    COMMENTS = "Finetuning ResNet18 on train/c11-12 chunk. For For evaluation, market1501 query and gallery images are used. 0.4 dropout prob applied."
+    COMMENTS = "Finetuning ResNet50 with weights produced by r10 on train/c18. For evaluation, DukeMTMC-Reid query and gallery images are used. Model freezed upto all epochs besides layer4 & classifier. 0.3 dropout prob applied."
     finetune_with_rp(comments=COMMENTS)

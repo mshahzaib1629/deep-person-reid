@@ -1,3 +1,6 @@
+import sys, re
+sys.path.append("/home/code/Shahzaib/MS/Thesis/Implementation/deep-person-reid/")
+from helpers import Matric
 import json, os, gspread, requests, datetime, time
 from oauth2client.service_account import ServiceAccountCredentials
 import plotly.graph_objects as go
@@ -86,9 +89,9 @@ def plot_graph(data):
     _save_graph(fig)
 
 
-WORKSHEET_NAME = "Finetune with RP - ResNet18"
-START_ROW = 7
-END_ROW = 9
+WORKSHEET_NAME = "Finetune with RP - ResNet50"
+START_ROW = 5
+END_ROW = 7
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.col_values(6)[START_ROW - 1 : END_ROW]
@@ -97,7 +100,7 @@ rank5_logs = worksheet.col_values(8)[START_ROW - 1 : END_ROW]
 rank10_logs = worksheet.col_values(9)[START_ROW - 1 : END_ROW]
 rank20_logs = worksheet.col_values(10)[START_ROW - 1 : END_ROW]
 
-eval_data = {"mAP": {}, "Rank-1": {}, "Rank-5": {}, "Rank-10": {}, "Rank-20": {}}
+eval_data = {Matric.map: {}, Matric.rank1: {}, Matric.rank5: {}, Matric.rank10: {}, Matric.rank20: {}}
 
 for index in range(len(mAP_logs)):
     row = index + START_ROW

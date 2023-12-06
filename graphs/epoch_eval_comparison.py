@@ -1,14 +1,10 @@
+import sys
+sys.path.append("/home/code/Shahzaib/MS/Thesis/Implementation/deep-person-reid/")
+from helpers import Matric
+
 import json, os, gspread, requests, datetime, time
 from oauth2client.service_account import ServiceAccountCredentials
 import plotly.graph_objects as go
-
-class Matric:
-    map = "mAP"
-    rank1 = "Rank-1"
-    rank5 = 'Rank-5'
-    rank10 =  'Rank-10'
-    rank20 = 'Rank-20'
-
 def _get_worksheet():
     try:
         EXCEL_LINK = "https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing"
@@ -99,20 +95,20 @@ def plot_graph(all_data, matrices):
     # Save the figure
     _save_graph(fig)
 
-WORKSHEET_NAME = "Finetune with RP - ResNet18"
-TARGET_ROWS = [8, 7, 9] 
-MATRICES = [Matric.rank5, Matric.rank10, Matric.map]
+WORKSHEET_NAME = "Finetune with RP - ResNet50"
+TARGET_ROWS = [ 8, 10] 
+MATRICES = [Matric.rank5, Matric.map]
 
 worksheet = _get_worksheet()
 all_eval_data = {}
 
 for TARGET_ROW in TARGET_ROWS:
     row_data = {
-        'mAP': worksheet.acell(f'F{TARGET_ROW}').value,
-        'Rank-1': worksheet.acell(f'G{TARGET_ROW}').value,
-        'Rank-5': worksheet.acell(f'H{TARGET_ROW}').value,
-        'Rank-10': worksheet.acell(f'I{TARGET_ROW}').value,
-        'Rank-20': worksheet.acell(f'J{TARGET_ROW}').value
+        Matric.map: worksheet.acell(f'F{TARGET_ROW}').value,
+        Matric.rank1: worksheet.acell(f'G{TARGET_ROW}').value,
+        Matric.rank5: worksheet.acell(f'H{TARGET_ROW}').value,
+        Matric.rank10: worksheet.acell(f'I{TARGET_ROW}').value,
+        Matric.rank20: worksheet.acell(f'J{TARGET_ROW}').value
     }
 
     eval_data = {metric: json.loads(value) for metric, value in row_data.items() if value and metric in MATRICES}

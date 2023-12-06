@@ -8,3 +8,10 @@ class Matric:
 class SelectedDatasets:
     Market1501 = "market1501"
     DukeMTMC = "dukemtmcreid"
+    CUHK03 = "cuhk03"
+    Chunks = "chunks"
+    RP_Memory = "representative_memory"
+
+class AvailableModels:
+    ResNet18 = "resnet18"
+    ResNet50 = "resnet50"
