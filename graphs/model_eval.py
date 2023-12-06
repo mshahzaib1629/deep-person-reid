@@ -44,11 +44,17 @@ def _get_data(rows, datasets, matrices):
     worksheet = _get_worksheet()
     data = {}
 
-    add_data = lambda dataset, matric, row, column : data[dataset][matric].append(worksheet.acell(f'{column}{row}').value)
+    def add_data (dataset, matric, row, column):
+        cell_value = worksheet.acell(f'{column}{row}').value
+        if cell_value != None:
+            data[dataset][matric].append(cell_value)
+
     for row in rows:
         if 'models_trained' not in data:
              data['models_trained'] = []
-        data["models_trained"].append(worksheet.acell(f'C{row}').value)
+        model_short_name = worksheet.acell(f'C{row}').value
+        if model_short_name != None:
+            data["models_trained"].append(model_short_name)
 
         for dataset in datasets:
             # create dataset structure in data if its not present
@@ -155,8 +161,8 @@ def plot_graph(data, rows, metrics, datasets):
     _save_graph(data, fig)
  
 
-WORKSHEET_NAME = "Test [Analysis] Finetune with RP - ResNet18"
-TARGET_ROWS = [ 3, 4,]
+WORKSHEET_NAME = "[Analysis] Finetune with RP - ResNet50"
+TARGET_ROWS = [3, 4, 5]
 MATRICES = [ Matric.rank5, Matric.rank1, Matric.map]
 DATASETS = [SelectedDatasets.Market1501, SelectedDatasets.DukeMTMC]
 
