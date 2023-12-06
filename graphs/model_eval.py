@@ -1,26 +1,86 @@
+import sys
+sys.path.append("/home/code/Shahzaib/MS/Thesis/Implementation/deep-person-reid/")
 import pandas as pd
 import plotly.graph_objects as go
+import json, os, gspread, requests, datetime, time
+from oauth2client.service_account import ServiceAccountCredentials
+from helpers import Matric, SelectedDatasets
 
 # The data dictionary as provided
 data = {
-    "Models Trained": ["r12", "r24", "r25"],
-    "Market1501": {
+    "models_trained": ["r12", "r24", "r25"],
+    "market1501": {
         "mAP": [39.48, 44.6, 38.9],
         "Rank-1": [66.1, 68.5, 63.4],
         "Rank-5": [83.9, 84.6, 81.7]
     },
-    "DukeMTMC": {
+    "dukemtmcreid": {
         "mAP": [10.9, 24.1, 23.3],
         "Rank-1": [22.2, 43.9, 45.01],
         "Rank-5": [36.7, 61.1, 63.8]
     }
 }
 
-# Function to create a Plotly line graph based on user input
-def create_plotly_line_graph(rows, metrics, datasets):
-    # Filter rows (subtract 1 for zero-indexed DataFrame)
-    rows = [r-1 for r in rows if r-1 in range(len(data["Models Trained"]))]
+def _get_worksheet():
+    try:
+        EXCEL_LINK = "https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing"
+        KEY_FILE = "./excel-service-key.json"
+
+        scope = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ]
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_FILE, scope)
+        gc = gspread.authorize(credentials)
+
+        document = gc.open_by_url(EXCEL_LINK)
+        worksheet = document.worksheet(WORKSHEET_NAME)
+
+        return worksheet
+    except Exception as e:
+        print('exception: ', e)
+
+def _get_data(rows, datasets, matrices):
+    worksheet = _get_worksheet()
+    data = {}
+
+    add_data = lambda dataset, matric, row, column : data[dataset][matric].append(worksheet.acell(f'{column}{row}').value)
+    for row in rows:
+        if 'models_trained' not in data:
+             data['models_trained'] = []
+        data["models_trained"].append(worksheet.acell(f'C{row}').value)
+
+        for dataset in datasets:
+            # create dataset structure in data if its not present
+            if dataset not in data.keys():
+                data[dataset] = {matric: [] for matric in matrices}
+            
+            if dataset == SelectedDatasets.Market1501:
+                    add_data(dataset, Matric.map, row, 'D') if Matric.map in matrices else None
+                    add_data(dataset, Matric.rank1, row, 'E') if Matric.rank1 in matrices else None
+                    add_data(dataset, Matric.rank5, row, 'F') if Matric.rank5 in matrices else None
+                    add_data(dataset, Matric.rank10, row, 'G') if Matric.rank10 in matrices else None
+                    add_data(dataset, Matric.rank20, row, 'H') if Matric.rank20 in matrices else None
+
+            elif dataset == SelectedDatasets.DukeMTMC:
+                    add_data(dataset, Matric.map, row, 'I') if Matric.map in matrices else None
+                    add_data(dataset, Matric.rank1, row, 'J') if Matric.rank1 in matrices else None
+                    add_data(dataset, Matric.rank5, row, 'K') if Matric.rank5 in matrices else None
+                    add_data(dataset, Matric.rank10, row, 'L') if Matric.rank10 in matrices else None
+                    add_data(dataset, Matric.rank20, row, 'M') if Matric.rank20 in matrices else None
+    print(data)
+    return data
+
+
     
+
+def plot_graph(data, rows, metrics, datasets):
+    
+    def convert_percentage_to_float(percentage_str):
+        return float(percentage_str.strip('%'))
+
+    # Filter rows (subtract 1 for zero-indexed DataFrame)
+    rows = [index for index, value in enumerate(data["models_trained"])]
     # Initialize a figure
     fig = go.Figure()
 
@@ -28,10 +88,10 @@ def create_plotly_line_graph(rows, metrics, datasets):
     for metric in metrics:
         for dataset in datasets:
             # Prepare the metric data for the selected rows
-            metric_data = [data[dataset][metric][r] for r in rows]
+            metric_data = [convert_percentage_to_float(data[dataset][metric][r]) for r in rows]
             # Add a trace for this metric
             fig.add_trace(go.Scatter(
-                x=[data["Models Trained"][r] for r in rows],
+                x=[data["models_trained"][r] for r in rows],
                 y=metric_data,
                 mode='lines+markers',
                 name=f'{dataset} {metric}'
@@ -45,15 +105,13 @@ def create_plotly_line_graph(rows, metrics, datasets):
         legend_title='Metrics'
     )
 
-    return fig
+    fig.show()
+ 
 
-# User inputs for rows, metrics, and datasets to plot
-rows = [1, 2, 3]  # Rows from the spreadsheet
-metrics = ["Rank-5"]  # Metrics to plot
-datasets = ["Market1501", "DukeMTMC"]  # Datasets to plot
+WORKSHEET_NAME = "Test [Analysis] Finetune with RP - ResNet18"
+TARGET_ROWS = [ 3, 4,]
+MATRICES = [ Matric.rank1]
+DATASETS = [SelectedDatasets.Market1501, SelectedDatasets.DukeMTMC]
 
-# Create the line graph
-fig_line = create_plotly_line_graph(rows, metrics, datasets)
-
-# Show the figure
-fig_line.show()
+# data = _get_data(TARGET_ROWS, DATASETS, MATRICES)
+plot_graph(data, TARGET_ROWS, MATRICES, DATASETS)
