@@ -72,7 +72,7 @@ def plot_graph(data):
         yaxis_title="Percentage %",
         annotations=[
             dict(
-                text=f"{WORKSHEET_NAME} - R{START_ROW} to R{END_ROW}",
+                text=f"{WORKSHEET_NAME} - r{START_ROW} to r{END_ROW}",
                 showarrow=False,
                 xref="paper",
                 yref="paper",

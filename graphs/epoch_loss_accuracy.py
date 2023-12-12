@@ -89,7 +89,7 @@ def plot_graph(data):
     plot_bgcolor='#f7f7f7',
     annotations=[
         dict(
-            text=f"{WORKSHEET_NAME} - R{TARGET_ROW}",
+            text=f"{WORKSHEET_NAME} - r{TARGET_ROW}",
             showarrow=False,
             xref="paper",
             yref="paper",

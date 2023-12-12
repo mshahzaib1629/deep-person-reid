@@ -141,7 +141,6 @@ def plot_graph(data, rows, metrics, datasets):
         plot_bgcolor='#f7f7f7',
         xaxis_title='Models Trained',
         yaxis_title='Metric Values',
-        legend_title='Metrics',
         annotations=[
         dict(
             text=make_title(WORKSHEET_NAME, TARGET_ROWS),
@@ -172,7 +171,7 @@ def plot_graph(data, rows, metrics, datasets):
  
 
 WORKSHEET_NAME = "[Analysis] Finetune with RP - ResNet50"
-TARGET_ROWS = [3, 4, 5, 6, 7]
+TARGET_ROWS = [3, 4, 5, 6, 7, 8]
 MATRICES = [ Matric.rank5, ]
 DATASETS = [SelectedDatasets.Market1501, SelectedDatasets.DukeMTMC]
 

@@ -58,7 +58,7 @@ def plot_graph(all_data, matrices):
                     x=epochs,
                     y=values,
                     mode='lines+markers',
-                    name=f"{metric} - R{row}"
+                    name=f"{metric} - r{row}"
                 ))
 
     def make_title(WORKSHEET_NAME, rows):
@@ -66,7 +66,7 @@ def plot_graph(all_data, matrices):
         sorted_list = sorted(rows)
 
         # Create the text
-        title = f"{WORKSHEET_NAME} - R{', R'.join(map(str, sorted_list))}"
+        title = f"{WORKSHEET_NAME} - r{', r'.join(map(str, sorted_list))}"
         return title
 
     # Update layout
