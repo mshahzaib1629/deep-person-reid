@@ -7,11 +7,11 @@ import plotly.graph_objects as go
 
 # Your matrices and corresponding data
 sample_data = {
-    "mAP": {"row_5": "9.723%", "row_6": "9.828%", "row_8": "11.215%"},
-    "Rank-1": {"row_5": "12.544%", "row_6": "12.544%", "row_8": "13.365%"},
-    "Rank-5": {"row_5": "14.537%", "row_6": "14.185%", "row_8": "15.123%"},
-    "Rank-10": {"row_5": "15.592%", "row_6": "14.889%", "row_8": "15.240%"},
-    "Rank-20": {"row_5": "17.116%", "row_6": "15.826%", "row_8": "16.295%"},
+    "mAP": {"r5": "9.723%", "r6": "9.828%", "r8": "11.215%"},
+    "Rank-1": {"r5": "12.544%", "r6": "12.544%", "r8": "13.365%"},
+    "Rank-5": {"r5": "14.537%", "r6": "14.185%", "r8": "15.123%"},
+    "Rank-10": {"r5": "15.592%", "r6": "14.889%", "r8": "15.240%"},
+    "Rank-20": {"r5": "17.116%", "r6": "15.826%", "r8": "16.295%"},
 }
 
 
@@ -67,31 +67,41 @@ def plot_graph(data):
     fig.update_traces(hoverlabel=dict(font_color='white'))
     fig.update_layout(
         title="Evaluation Metrics over Iterations",
+        plot_bgcolor='#f7f7f7',
         xaxis_title="Iterations (rows)",
         yaxis_title="Percentage %",
         annotations=[
-        dict(
-            text=f"{WORKSHEET_NAME} - R{START_ROW} to R{END_ROW}",
-            showarrow=False,
-            xref="paper",
-            yref="paper",
-            x=0.006,
-            y=1.05,  
-            xanchor="left",
-            yanchor="top",  
-            font=dict(
-                size=14,
-                color="black"
+            dict(
+                text=f"{WORKSHEET_NAME} - R{START_ROW} to R{END_ROW}",
+                showarrow=False,
+                xref="paper",
+                yref="paper",
+                x=0.006,
+                y=1.05,  
+                xanchor="left",
+                yanchor="top",  
+                font=dict(
+                    size=14,
+                    color="black"
+                )
             )
+        ],
+        legend=dict(
+            orientation="h",  # "h" for horizontal, "v" for vertical
+            y=-0.08,  # Adjust this value to move the legend below the graph
+            font=dict(
+                size=16,  # Adjust this value to increase the font size
+                color="black",  # You can also change the font color if needed
+                # family="Arial"  # Optional: You can specify the font family
+            ),
         )
-    ],
     )
     _save_graph(fig)
 
 
 WORKSHEET_NAME = "Finetune with RP - ResNet50"
 START_ROW = 5
-END_ROW = 7
+END_ROW = 8
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.col_values(6)[START_ROW - 1 : END_ROW]
@@ -109,31 +119,31 @@ for index in range(len(mAP_logs)):
     if len(mAP_data) > 0:
         mAP_data = json.loads(mAP_data)
         last_epoch = list(mAP_data.keys())[-1]
-        eval_data["mAP"][f"row_{row}"] = mAP_data[last_epoch]
+        eval_data["mAP"][f"r{row}"] = mAP_data[last_epoch]
 
     rank1_data = rank1_logs[index]
     if len(rank1_data) > 0:
         rank1_data = json.loads(rank1_data)
         last_epoch = list(rank1_data.keys())[-1]
-        eval_data["Rank-1"][f"row_{row}"] = rank1_data[last_epoch]
+        eval_data["Rank-1"][f"r{row}"] = rank1_data[last_epoch]
 
     rank5_data = rank5_logs[index]
     if len(rank5_data) > 0:
         rank5_data = json.loads(rank5_data)
         last_epoch = list(rank5_data.keys())[-1]
-        eval_data["Rank-5"][f"row_{row}"] = rank5_data[last_epoch]
+        eval_data["Rank-5"][f"r{row}"] = rank5_data[last_epoch]
 
     rank10_data = rank10_logs[index]
     if len(rank10_data) > 0:
         rank10_data = json.loads(rank10_data)
         last_epoch = list(rank10_data.keys())[-1]
-        eval_data["Rank-10"][f"row_{row}"] = rank10_data[last_epoch]
+        eval_data["Rank-10"][f"r{row}"] = rank10_data[last_epoch]
 
     rank20_data = rank20_logs[index]
     if len(rank20_data) > 0:
         rank20_data = json.loads(rank20_data)
         last_epoch = list(rank20_data.keys())[-1]
-        eval_data["Rank-20"][f"row_{row}"] = rank20_data[last_epoch]
+        eval_data["Rank-20"][f"r{row}"] = rank20_data[last_epoch]
 
 eval_data = {key: value for key, value in eval_data.items() if value}
 

@@ -138,6 +138,7 @@ def plot_graph(data, rows, metrics, datasets):
     # Update the layout of the figure
     fig.update_layout(
         title='Trained Models Perfornmace on Datasets',
+        plot_bgcolor='#f7f7f7',
         xaxis_title='Models Trained',
         yaxis_title='Metric Values',
         legend_title='Metrics',
@@ -155,15 +156,24 @@ def plot_graph(data, rows, metrics, datasets):
                 size=14,
                 color="black"  
             )
-        )]
+        )],
+        legend=dict(
+            orientation="h",  # "h" for horizontal, "v" for vertical
+            y=-0.08,  # Adjust this value to move the legend below the graph
+            font=dict(
+                size=16,  # Adjust this value to increase the font size
+                color="black",  # You can also change the font color if needed
+                # family="Arial"  # Optional: You can specify the font family
+            ),
+        )
     )
 
     _save_graph(data, fig)
  
 
 WORKSHEET_NAME = "[Analysis] Finetune with RP - ResNet50"
-TARGET_ROWS = [3, 4, 5]
-MATRICES = [ Matric.rank5, Matric.rank1, Matric.map]
+TARGET_ROWS = [3, 4, 5, 6, 7]
+MATRICES = [ Matric.rank5, ]
 DATASETS = [SelectedDatasets.Market1501, SelectedDatasets.DukeMTMC]
 
 data = _get_data(TARGET_ROWS, DATASETS, MATRICES)

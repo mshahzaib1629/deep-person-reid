@@ -63,6 +63,7 @@ def plot_graph(data):
 
     fig.update_traces(hoverlabel=dict(font_color='white'))
     fig.update_layout(title="Evaluation Metrics over Epochs",
+    plot_bgcolor='#f7f7f7',
     annotations=[
         dict(
             text=f"{WORKSHEET_NAME} - R{TARGET_ROW}",
@@ -79,12 +80,22 @@ def plot_graph(data):
             )
         )
     ],
+    legend=dict(
+            orientation="h",  # "h" for horizontal, "v" for vertical
+            y=-0.08,  # Adjust this value to move the legend below the graph
+            font=dict(
+                size=16,  # Adjust this value to increase the font size
+                color="black",  # You can also change the font color if needed
+                # family="Arial"  # Optional: You can specify the font family
+            ),
+        ),
     xaxis_title="Epochs",
-    yaxis_title="Percentage %",)
+    yaxis_title="Percentage %"
+    )
     _save_graph(fig)
 
 WORKSHEET_NAME = "Finetune with RP - ResNet50"
-TARGET_ROW = 7
+TARGET_ROW = 11
 
 worksheet = _get_worksheet()
 mAP_logs = worksheet.acell(f'F{TARGET_ROW}')

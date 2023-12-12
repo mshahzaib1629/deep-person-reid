@@ -86,6 +86,7 @@ def plot_graph(data):
     fig.update_yaxes(title_text="Loss", row=1, col=1)
     fig.update_yaxes(title_text="Accuracy (%)", row=2, col=1)
     fig.update_layout(title="Training Loss, Accuracy over epochs",
+    plot_bgcolor='#f7f7f7',
     annotations=[
         dict(
             text=f"{WORKSHEET_NAME} - R{TARGET_ROW}",
@@ -102,6 +103,15 @@ def plot_graph(data):
             )
         )
     ],
+    legend=dict(
+            orientation="h",  # "h" for horizontal, "v" for vertical
+            y=-0.08,  # Adjust this value to move the legend below the graph
+            font=dict(
+                size=16,  # Adjust this value to increase the font size
+                color="black",  # You can also change the font color if needed
+                # family="Arial"  # Optional: You can specify the font family
+            ),
+        )
     )
 
     _save_graph(fig)

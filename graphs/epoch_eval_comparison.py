@@ -72,24 +72,34 @@ def plot_graph(all_data, matrices):
     # Update layout
     fig.update_layout(
         title="Matrices Evaluation Comparison over Epochs",
+        plot_bgcolor='#f7f7f7',
         xaxis_title="Epochs",
         yaxis_title="Percentage %",
         annotations=[
-        dict(
-            text=make_title(WORKSHEET_NAME, TARGET_ROWS),
-            showarrow=False,
-            xref="paper",
-            yref="paper",
-            x=0.006,  
-            y=1.05,  
-            xanchor="left",
-            yanchor="top",  
-            font=dict(
-                size=14,
-                color="black"  
+            dict(
+                text=make_title(WORKSHEET_NAME, TARGET_ROWS),
+                showarrow=False,
+                xref="paper",
+                yref="paper",
+                x=0.006,  
+                y=1.05,  
+                xanchor="left",
+                yanchor="top",  
+                font=dict(
+                    size=14,
+                    color="black"  
+                )
             )
+        ],
+    legend=dict(
+            orientation="h",  # "h" for horizontal, "v" for vertical
+            y=-0.08,  # Adjust this value to move the legend below the graph
+            font=dict(
+                size=16,  # Adjust this value to increase the font size
+                color="black",  # You can also change the font color if needed
+                # family="Arial"  # Optional: You can specify the font family
+            ),
         )
-    ],
     )
 
     # Save the figure
