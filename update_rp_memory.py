@@ -28,17 +28,17 @@ def update_rp_memory(source_datasets, source_dataset_name, rp_memory_dir, label_
             representative_memory_main_directory=rp_memory_dir,
             label_start_index=label_start_index,
             label_end_index=label_end_index,
-            selection_percent=0.5,
-            retain_percent=0.5,
+            selection_percent=selection_percent,
+            retain_percent=retain_percent,
         )
     
 
 if __name__ == "__main__":
     RP_MEMORY_PATH = os.path.join("reid-data", "representative-memory")
     update_rp_memory(source_datasets=[SelectedDatasets.Chunks, SelectedDatasets.RP_Memory], 
-                     source_dataset_name=SelectedDatasets.DukeMTMC, 
+                     source_dataset_name=SelectedDatasets.Market1501, 
                      rp_memory_dir=RP_MEMORY_PATH, 
                      label_start_index=0, 
                      label_end_index=3, 
-                     selection_percent=0.5, 
+                     selection_percent=0.05, 
                      retain_percent=0.5)

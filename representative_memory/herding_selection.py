@@ -1,40 +1,26 @@
 import numpy as np
 
-
 def euclidean_distance(a, b):
     return np.sqrt(np.sum((a - b) ** 2))
 
-
 def herding_selection(data, num_selected):
     selected_indices = []
-    selected_data = []
+    remaining_data = np.array(data)
+    original_indices = np.arange(len(data))  # Keep track of original indices
 
-    # Step 1: Select an initial instance (e.g., the first instance)
-    selected_indices.append(0)
-    selected_data.append(data[0])
+    for _ in range(num_selected):
+        # Calculate the mean of the remaining data
+        mean_data = np.mean(remaining_data, axis=0)
 
-    for _ in range(1, num_selected):
-        # Initialize the maximum similarity and selected index
-        max_similarity = -float("inf")
-        selected_idx = None
+        # Find the closest instance to the mean
+        distances = [euclidean_distance(instance, mean_data) for instance in remaining_data]
+        selected_idx = np.argmin(distances)
 
-        for idx, instance in enumerate(data):
-            if idx in selected_indices:
-                continue
+        # Add the original index of the selected data point
+        selected_indices.append(original_indices[selected_idx])
 
-            # Calculate similarity to instances in the selected subset
-            similarities = [
-                euclidean_distance(instance, selected) for selected in selected_data
-            ]
-            similarity = sum(similarities)
-
-            # Update the selected instance if the similarity is greater
-            if similarity > max_similarity:
-                max_similarity = similarity
-                selected_idx = idx
-
-        # Add the selected instance to the subset
-        selected_indices.append(selected_idx)
-        selected_data.append(data[selected_idx])
-
+        # Remove the selected instance and its index from remaining data and indices
+        remaining_data = np.delete(remaining_data, selected_idx, axis=0)
+        original_indices = np.delete(original_indices, selected_idx)
+    
     return selected_indices
