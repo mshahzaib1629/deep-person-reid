@@ -101,16 +101,17 @@ def finetune_without_rp(comments="Finetuining without RP"):
 def finetune_with_rp(comments="Finetuning with RP"):
     """Train with finetuning and representative memory"""
 
-    worksheet_name = "Finetune with RP - ResNet50"
+    worksheet_name = "Finetune with RP - ResNet18"
 
-    model_name = AvailableModels.ResNet50
+    model_name = AvailableModels.ResNet18Att
 
     source_datasets = [SelectedDatasets.Chunks, SelectedDatasets.RP_Memory]
     source_dataset_name = SelectedDatasets.DukeMTMC
     source_dataset_label_start_index = 0
     source_dataset_label_end_index = 3
     target_datasets = [SelectedDatasets.DukeMTMC]
-    weight_directory =  os.path.join("log", model_name, "model", "finetune-rp-res50-r10-model.pth.tar-50")
+    weight_directory =  os.path.join("log", model_name, "model", "finetune-rp-res18-r24-model.pth.tar-20")
+    # weight_directory = None
     rp_memory_directory = RP_MEMORY_PATH
 
 
@@ -126,10 +127,10 @@ def finetune_with_rp(comments="Finetuning with RP"):
         weight_directory,
         rp_memory_directory,
         use_early_stopping=True,
-        fixed_epochs=50,
+        fixed_epochs=20,
         open_layers=["layer4", "classifier"],
-        epochs=50,
-        eval_freq=10,
+        epochs=20,
+        eval_freq=5,
         eval_patience=1,
         early_stopping_eval_matric=Matric.rank5,
         desired_accuracy=0.90,
@@ -140,5 +141,5 @@ def finetune_with_rp(comments="Finetuning with RP"):
 
 
 if __name__ == "__main__":
-    COMMENTS = "Finetuning ResNet50 with weights produced by r10 on train/c18. For evaluation, DukeMTMC-Reid query and gallery images are used. Model freezed upto all epochs besides layer4 & classifier. 0.3 dropout prob applied."
+    COMMENTS = "Applied Attenion in the end of the model (i.e. after feature mapping) instead of at the start (i.e. before the feature mapping)."
     finetune_with_rp(comments=COMMENTS)

@@ -21,6 +21,7 @@ from .resnet_ibn_a import *
 from .resnet_ibn_b import *
 from .shufflenetv2 import *
 from .inceptionresnetv2 import *
+from .resnet_attention import *
 
 __model_factory = {
     # image classification models
@@ -37,6 +38,8 @@ __model_factory = {
     'se_resnet101': se_resnet101,
     'se_resnext50_32x4d': se_resnext50_32x4d,
     'se_resnext101_32x4d': se_resnext101_32x4d,
+    'resnet18_attention': resnet18_attention,
+    'resnet50_attention': resnet50_attention,
     'densenet121': densenet121,
     'densenet169': densenet169,
     'densenet201': densenet201,

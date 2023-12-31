@@ -15,3 +15,5 @@ class SelectedDatasets:
 class AvailableModels:
     ResNet18 = "resnet18"
     ResNet50 = "resnet50"
+    ResNet18Att = "resnet18_attention"
+    ResNet50Att = "resnet50_attention"

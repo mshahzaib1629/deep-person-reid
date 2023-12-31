@@ -105,9 +105,9 @@ def plot_graph(all_data, matrices):
     # Save the figure
     _save_graph(fig)
 
-WORKSHEET_NAME = "Finetune with RP - ResNet50"
-TARGET_ROWS = [ 8, 10] 
-MATRICES = [Matric.rank5, Matric.map]
+WORKSHEET_NAME = "Finetune with RP - ResNet18"
+TARGET_ROWS = [ 25, 26, 27, 28, 29] 
+MATRICES = [Matric.rank5, ]
 
 worksheet = _get_worksheet()
 all_eval_data = {}
