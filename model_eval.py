@@ -35,7 +35,7 @@ def evaluate_models(models, model_class, datasets, worksheet_name = None):
         # Create the worksheet_connector
 
         update_worksheet(
-            excel_link="https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing",
+            excel_link="https://docs.google.com/spreadsheets/d/1DFhPbvf2PPqDpq4utP1FhI7FY_IXn3es2c5006TRs0o/edit",
             worksheet_name=worksheet_name,
             is_analysis=True,
             model_on_analysis=model_name

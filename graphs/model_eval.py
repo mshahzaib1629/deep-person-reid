@@ -23,7 +23,7 @@ from helpers import Matric, SelectedDatasets
 
 def _get_worksheet():
     try:
-        EXCEL_LINK = "https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing"
+        EXCEL_LINK = "https://docs.google.com/spreadsheets/d/1DFhPbvf2PPqDpq4utP1FhI7FY_IXn3es2c5006TRs0o/edit"
         KEY_FILE = "./excel-service-key.json"
 
         scope = [
@@ -35,10 +35,9 @@ def _get_worksheet():
 
         document = gc.open_by_url(EXCEL_LINK)
         worksheet = document.worksheet(WORKSHEET_NAME)
-
         return worksheet
     except Exception as e:
-        print('exception: ', e)
+        print('exception in _getworksheet: ', e)
 
 def _get_data(rows, datasets, matrices):
     worksheet = _get_worksheet()
@@ -171,7 +170,7 @@ def plot_graph(data, rows, metrics, datasets):
  
 
 WORKSHEET_NAME = "[Analysis] Finetune with RP - ResNet50"
-TARGET_ROWS = [3, 4, 5, 6, 7, 8]
+TARGET_ROWS = [24, 25, 26, 27, 28, 29, 30]
 MATRICES = [ Matric.rank5, ]
 DATASETS = [SelectedDatasets.Market1501, SelectedDatasets.DukeMTMC]
 

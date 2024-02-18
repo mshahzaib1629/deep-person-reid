@@ -7,7 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import plotly.graph_objects as go
 def _get_worksheet():
     try:
-        EXCEL_LINK = "https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing"
+        EXCEL_LINK = "https://docs.google.com/spreadsheets/d/1DFhPbvf2PPqDpq4utP1FhI7FY_IXn3es2c5006TRs0o/edit"
         KEY_FILE = "./excel-service-key.json"
 
         scope = [
@@ -105,9 +105,9 @@ def plot_graph(all_data, matrices):
     # Save the figure
     _save_graph(fig)
 
-WORKSHEET_NAME = "Finetune with RP - ResNet18"
-TARGET_ROWS = [ 25, 26, 27, 28, 29] 
-MATRICES = [Matric.rank5, ]
+WORKSHEET_NAME = "Test Attention"
+TARGET_ROWS = [ 4, 5, 6, 7] 
+MATRICES = [Matric.rank1, ]
 
 worksheet = _get_worksheet()
 all_eval_data = {}

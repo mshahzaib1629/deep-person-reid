@@ -76,17 +76,17 @@ def run_reid(
     metadata["images_trained_on"]["rp_memory"] = len(rp_images)
 
     os.environ["WORKSHEET_CONNECTOR_PATH"] = "./worksheet_connector.json"
-    if (
-        resume_training == False
-        and os.path.exists(os.environ.get("WORKSHEET_CONNECTOR_PATH")) == False
-    ):
-        # if training is not resumed and temp.json do not exist to target a row in worksheet, create new row entry
-        update_worksheet(
-            excel_link="https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing",
-            worksheet_name=worksheet_name,
-            comments=comments,
-            metadata=metadata,
-        )
+    # if (
+    #     resume_training == False
+    #     and os.path.exists(os.environ.get("WORKSHEET_CONNECTOR_PATH")) == False
+    # ):
+    #     # if training is not resumed and temp.json do not exist to target a row in worksheet, create new row entry
+    #     update_worksheet(
+    #         excel_link="https://docs.google.com/spreadsheets/d/1DFhPbvf2PPqDpq4utP1FhI7FY_IXn3es2c5006TRs0o/edit",
+    #         worksheet_name=worksheet_name,
+    #         comments=comments,
+    #         metadata=metadata,
+    #     )
 
     model = torchreid.models.build_model(
         name=model_name,
@@ -94,6 +94,10 @@ def run_reid(
         loss="softmax",
         pretrained=True,
     )
+
+    # print('Model Layers')
+    # print(model)
+    # return
 
     optimizer = torchreid.optim.build_optimizer(model, optim="adam", lr=0.0003)
 

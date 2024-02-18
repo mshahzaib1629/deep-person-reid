@@ -17,7 +17,7 @@ sample_data = {
 
 def _get_worksheet():
     try:
-        EXCEL_LINK = "https://docs.google.com/spreadsheets/d/1qtLI_GLpcnPONtLXDg56aBfNlp5r1jlSMQ5QORbuBVs/edit?usp=sharing"
+        EXCEL_LINK = "https://docs.google.com/spreadsheets/d/1DFhPbvf2PPqDpq4utP1FhI7FY_IXn3es2c5006TRs0o/edit"
         KEY_FILE = "./excel-service-key.json"
 
         scope = [

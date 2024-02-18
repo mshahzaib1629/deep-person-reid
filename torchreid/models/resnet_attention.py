@@ -370,7 +370,7 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         f = self.featuremaps(x)
-        f = self.attention_layer_for_end(f)
+        # f = self.attention_layer_for_end(f)
         v = self.global_avgpool(f)
         v = v.view(v.size(0), -1)
 
